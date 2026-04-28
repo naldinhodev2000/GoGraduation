@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -51,5 +52,6 @@ public class GrupoEntity {
     private LocalDate dataAtualizacao;
 
 
-
+    @OneToMany(mappedBy = "grupo")
+    private List<UsuarioEntity> usuarios;
 }
