@@ -9,7 +9,7 @@ import fafenterprise.dev.gograduation.dto.request.ExpenseRequestDTO;
 import fafenterprise.dev.gograduation.dto.response.ExpenseResponseDTO;
 import fafenterprise.dev.gograduation.entity.uno.ExpenseEntity;
 import fafenterprise.dev.gograduation.entity.uno.GroupEntity;
-import fafenterprise.dev.gograduation.repository.ExpendsRepository;
+import fafenterprise.dev.gograduation.repository.ExpenseRepository;
 import fafenterprise.dev.gograduation.repository.GroupRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ExpenseService{
 
-    final ExpendsRepository expenseRepository;
+    final ExpenseRepository expenseRepository;
     final GroupRepository groupRepository;
 
     public ExpenseResponseDTO create(ExpenseRequestDTO expenseRequestDTO){

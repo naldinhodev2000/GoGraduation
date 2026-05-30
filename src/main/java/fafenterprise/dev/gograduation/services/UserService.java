@@ -65,7 +65,7 @@ public class UserService {
             .stream()
             .map(usuario -> new UserResponseDTO(
                 usuario.getId(),
-                usuario.getLogin(),
+                usuario.getName(),
                 usuario.getEmail(),
                 usuario.getTelefone()))
                 .toList();

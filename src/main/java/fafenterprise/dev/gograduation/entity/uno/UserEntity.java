@@ -9,58 +9,60 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-
+@Entity
+@Table(name = "users")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "User")
-
 public class UserEntity {
+
     @Id
     @GeneratedValue
     private UUID id;
 
     @NotBlank
-    @Column (name = "name", nullable = false)
+    @Column(nullable = false)
     private String name;
 
     @NotBlank
-    @Column (name = "email", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @NotBlank
-    @Column(name = "telefone", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String telefone;
 
     @NotBlank
-    @Column(name = "login", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String login;
 
     @NotBlank
-    @Column(name = "password", nullable = false)
+    @Column(nullable = false)
     private String password;
 
-    @Column(name = "created_at", nullable = false)
+    @NotNull
+    @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_At", nullable = false)
+    @NotNull
+    @Column(nullable = false)
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "user")
-    private List<GroupUserEntity> groups;
+    private List<GroupUserEntity> memberships;
 
     @OneToMany(mappedBy = "user")
-    private List<TransactionEntity> transations;
+    private List<TransactionEntity> transactions;
 
     @OneToMany(mappedBy = "user")
-    private List<SubscriptionEntity> monthlyFee;
+    private List<SubscriptionEntity> subscriptions;
 
     @OneToMany(mappedBy = "user")
     private List<RaffleSellerEntity> raffles;
-
 }
