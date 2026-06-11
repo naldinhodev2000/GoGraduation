@@ -1,12 +1,14 @@
 package fafenterprise.dev.gograduation.services;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import fafenterprise.dev.gograduation.dto.GroupUserDTO;
+import fafenterprise.dev.gograduation.dto.response.GroupResponseDTO;
 import fafenterprise.dev.gograduation.entity.relationship.GroupUserEntity;
 import fafenterprise.dev.gograduation.entity.uno.GroupEntity;
 import fafenterprise.dev.gograduation.entity.uno.UserEntity;
@@ -100,9 +102,7 @@ public class GroupUserService {
 
     public void joinGroup(String groupToken) {
 
-        
         UUID userId = jwtService.getLoggedId();
-        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>" + userId);
 
         GroupEntity group = groupRepo.findByToken(groupToken)
                 .orElseThrow(() -> new RuntimeException("Group not found"));
@@ -135,4 +135,25 @@ public class GroupUserService {
 
         throw new RuntimeException("User already in group");
     }
+
+    public List<GroupResponseDTO> getJoinedGroups() {
+        UUID userId = jwtService.getLoggedId();
+
+        List<GroupUserEntity> groups = groupUserRepo.findByUserIdAndStatus(userId, GroupUserStatus.ACTIVE);
+
+        return groups.stream()
+                .map(groupUser -> {
+                    GroupEntity group = groupUser.getGroup();
+
+                    return new GroupResponseDTO(
+                            group.getId(),
+                            group.getName(),
+                            group.getGoal(),
+                            group.getTeam(),
+                            group.getToken());
+                })
+                .toList();
+
+    }
+
 }
