@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import fafenterprise.dev.gograduation.dto.GroupUserDTO;
 import fafenterprise.dev.gograduation.entity.relationship.GroupUserEntity;
@@ -18,19 +19,23 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class GroupUserService {
 
-    final GroupUserRepository groupUserRepo;
-    final UserRepository userRepo;
-    final GroupRepository groupRepo;
-    final JwtService jwtService;
+    private final GroupUserRepository groupUserRepo;
+    private final UserRepository userRepo;
+    private final GroupRepository groupRepo;
+    private final JwtService jwtService;
 
     public void create(UUID groupId) {
 
         UUID loggedUserId = jwtService.getLoggedId();
 
-        GroupEntity group = groupRepo.findById(groupId).orElseThrow();
-        UserEntity user = userRepo.findById(loggedUserId).orElseThrow();
+        GroupEntity group = groupRepo.findById(groupId)
+                .orElseThrow(() -> new RuntimeException("Group not found"));
+
+        UserEntity user = userRepo.findById(loggedUserId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         GroupUserEntity groupUser = new GroupUserEntity();
         groupUser.setUser(user);
@@ -44,8 +49,19 @@ public class GroupUserService {
 
     public void addUser(GroupUserDTO groupUserDTO) {
 
-        GroupEntity group = groupRepo.findById(groupUserDTO.idGroup()).orElseThrow();
-        UserEntity user = userRepo.findById(groupUserDTO.idUser()).orElseThrow();
+        GroupEntity group = groupRepo.findById(groupUserDTO.idGroup())
+                .orElseThrow(() -> new RuntimeException("Group not found"));
+
+        UserEntity user = userRepo.findById(groupUserDTO.idUser())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        GroupUserEntity existing = groupUserRepo
+                .findByUser_IdAndGroup_Id(user.getId(), group.getId())
+                .orElse(null);
+
+        if (existing != null) {
+            throw new RuntimeException("User already in group");
+        }
 
         GroupUserEntity groupUser = new GroupUserEntity();
         groupUser.setUser(user);
@@ -73,6 +89,10 @@ public class GroupUserService {
                 .findByUser_IdAndGroup_Id(userIdToRemove, groupId)
                 .orElseThrow(() -> new RuntimeException("Target user is not in this group"));
 
+        if (targetMembership.getRole() == Role.ADMIN) {
+            throw new RuntimeException("Cannot remove another admin");
+        }
+
         targetMembership.setStatus(GroupUserStatus.REMOVED);
 
         groupUserRepo.save(targetMembership);
@@ -80,7 +100,9 @@ public class GroupUserService {
 
     public void joinGroup(String groupToken) {
 
+        
         UUID userId = jwtService.getLoggedId();
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>" + userId);
 
         GroupEntity group = groupRepo.findByToken(groupToken)
                 .orElseThrow(() -> new RuntimeException("Group not found"));
@@ -92,24 +114,25 @@ public class GroupUserService {
                 .findByUser_IdAndGroup_Id(userId, group.getId())
                 .orElse(null);
 
-        if (existing != null) {
+        if (existing == null) {
 
-            if (existing.getStatus() == GroupUserStatus.REMOVED) {
-                existing.setStatus(GroupUserStatus.ACTIVE);
-                groupUserRepo.save(existing);
-                return;
-            }
+            GroupUserEntity groupUser = new GroupUserEntity();
+            groupUser.setUser(user);
+            groupUser.setGroup(group);
+            groupUser.setJoinedAt(LocalDateTime.now());
+            groupUser.setRole(Role.MEMBER);
+            groupUser.setStatus(GroupUserStatus.ACTIVE);
 
-            throw new RuntimeException("User already in group");
+            groupUserRepo.save(groupUser);
+            return;
         }
 
-        GroupUserEntity groupUser = new GroupUserEntity();
-        groupUser.setUser(user);
-        groupUser.setGroup(group);
-        groupUser.setJoinedAt(LocalDateTime.now());
-        groupUser.setRole(Role.MEMBER);
-        groupUser.setStatus(GroupUserStatus.ACTIVE);
+        if (existing.getStatus() == GroupUserStatus.REMOVED) {
+            existing.setStatus(GroupUserStatus.ACTIVE);
+            groupUserRepo.save(existing);
+            return;
+        }
 
-        groupUserRepo.save(groupUser);
+        throw new RuntimeException("User already in group");
     }
 }

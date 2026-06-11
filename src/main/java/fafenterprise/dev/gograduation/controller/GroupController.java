@@ -2,6 +2,7 @@ package fafenterprise.dev.gograduation.controller;
 
 import fafenterprise.dev.gograduation.dto.GroupUserDTO;
 import fafenterprise.dev.gograduation.dto.request.GroupRequestDTO;
+import fafenterprise.dev.gograduation.dto.request.JoinGroupDTO;
 import fafenterprise.dev.gograduation.dto.response.GroupResponseDTO;
 import fafenterprise.dev.gograduation.services.GroupService;
 import fafenterprise.dev.gograduation.services.GroupUserService;
@@ -62,7 +63,7 @@ public class GroupController {
     }
 
     @PostMapping("/join")
-    public void joinGroup(@RequestBody String groupToken) {
-        groupUserService.joinGroup(groupToken);
+    public void joinGroup(@RequestBody JoinGroupDTO dto) {
+        groupUserService.joinGroup(dto.token());
     }
 }

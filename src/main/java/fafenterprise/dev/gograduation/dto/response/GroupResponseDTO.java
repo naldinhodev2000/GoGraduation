@@ -7,7 +7,8 @@ public record GroupResponseDTO(
         UUID id,
         String name,
         BigDecimal goal,
-        String team
+        String team,
+        String token
 
 ) {
 }

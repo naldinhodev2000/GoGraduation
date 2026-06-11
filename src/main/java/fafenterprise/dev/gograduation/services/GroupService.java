@@ -40,7 +40,7 @@ public class GroupService {
 
 
         return new GroupResponseDTO(
-            newGroup.getId(), newGroup.getName(), newGroup.getGoal(), newGroup.getTeam()
+            newGroup.getId(), newGroup.getName(), newGroup.getGoal(), newGroup.getTeam(), newGroup.getToken()
         );
 
     }
@@ -52,7 +52,8 @@ public class GroupService {
                         group.getId(),
                         group.getName(),
                         group.getGoal(),
-                        group.getTeam()
+                        group.getTeam(),
+                        group.getToken()
                 )).toList();
     }
 
@@ -71,7 +72,8 @@ public class GroupService {
             updatedGroup.getId(), 
             updatedGroup.getName(), 
             updatedGroup.getGoal(), 
-            updatedGroup.getTeam()
+            updatedGroup.getTeam(),
+            updatedGroup.getToken()
         );
     }
 
