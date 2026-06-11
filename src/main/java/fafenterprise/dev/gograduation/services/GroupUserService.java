@@ -19,14 +19,18 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GroupUserService {
+
     final GroupUserRepository groupUserRepo;
     final UserRepository userRepo;
     final GroupRepository groupRepo;
+    final JwtService jwtService;
 
-    public void create(UUID createdBy, UUID groupId) {
+    public void create(UUID groupId) {
+
+        UUID loggedUserId = jwtService.getLoggedId();
 
         GroupEntity group = groupRepo.findById(groupId).orElseThrow();
-        UserEntity user = userRepo.findById(createdBy).orElseThrow();
+        UserEntity user = userRepo.findById(loggedUserId).orElseThrow();
 
         GroupUserEntity groupUser = new GroupUserEntity();
         groupUser.setUser(user);
@@ -39,6 +43,7 @@ public class GroupUserService {
     }
 
     public void addUser(GroupUserDTO groupUserDTO) {
+
         GroupEntity group = groupRepo.findById(groupUserDTO.idGroup()).orElseThrow();
         UserEntity user = userRepo.findById(groupUserDTO.idUser()).orElseThrow();
 
@@ -50,6 +55,61 @@ public class GroupUserService {
         groupUser.setStatus(GroupUserStatus.ACTIVE);
 
         groupUserRepo.save(groupUser);
+    }
 
+    public void removeUser(UUID groupId, UUID userIdToRemove) {
+
+        UUID loggedUserId = jwtService.getLoggedId();
+
+        GroupUserEntity adminMembership = groupUserRepo
+                .findByUser_IdAndGroup_Id(loggedUserId, groupId)
+                .orElseThrow(() -> new RuntimeException("User is not in this group"));
+
+        if (adminMembership.getRole() != Role.ADMIN) {
+            throw new RuntimeException("Only admins can remove users from the group");
+        }
+
+        GroupUserEntity targetMembership = groupUserRepo
+                .findByUser_IdAndGroup_Id(userIdToRemove, groupId)
+                .orElseThrow(() -> new RuntimeException("Target user is not in this group"));
+
+        targetMembership.setStatus(GroupUserStatus.REMOVED);
+
+        groupUserRepo.save(targetMembership);
+    }
+
+    public void joinGroup(String groupToken) {
+
+        UUID userId = jwtService.getLoggedId();
+
+        GroupEntity group = groupRepo.findByToken(groupToken)
+                .orElseThrow(() -> new RuntimeException("Group not found"));
+
+        UserEntity user = userRepo.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        GroupUserEntity existing = groupUserRepo
+                .findByUser_IdAndGroup_Id(userId, group.getId())
+                .orElse(null);
+
+        if (existing != null) {
+
+            if (existing.getStatus() == GroupUserStatus.REMOVED) {
+                existing.setStatus(GroupUserStatus.ACTIVE);
+                groupUserRepo.save(existing);
+                return;
+            }
+
+            throw new RuntimeException("User already in group");
+        }
+
+        GroupUserEntity groupUser = new GroupUserEntity();
+        groupUser.setUser(user);
+        groupUser.setGroup(group);
+        groupUser.setJoinedAt(LocalDateTime.now());
+        groupUser.setRole(Role.MEMBER);
+        groupUser.setStatus(GroupUserStatus.ACTIVE);
+
+        groupUserRepo.save(groupUser);
     }
 }

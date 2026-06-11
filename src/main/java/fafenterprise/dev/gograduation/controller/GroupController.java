@@ -1,8 +1,10 @@
 package fafenterprise.dev.gograduation.controller;
 
+import fafenterprise.dev.gograduation.dto.GroupUserDTO;
 import fafenterprise.dev.gograduation.dto.request.GroupRequestDTO;
 import fafenterprise.dev.gograduation.dto.response.GroupResponseDTO;
 import fafenterprise.dev.gograduation.services.GroupService;
+import fafenterprise.dev.gograduation.services.GroupUserService;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class GroupController {
     final GroupService groupService;
+    final GroupUserService groupUserService;
 
     @PostMapping
     public GroupResponseDTO create(@RequestBody GroupRequestDTO groupRequestDTO) {
@@ -29,19 +32,37 @@ public class GroupController {
     }
 
     @GetMapping
-    public List<GroupResponseDTO> listAll(){
+    public List<GroupResponseDTO> listAll() {
         return groupService.listAll();
     }
 
     @PutMapping("/{id}")
-    public GroupResponseDTO update(@PathVariable UUID id, @RequestBody GroupRequestDTO group){
+    public GroupResponseDTO update(@PathVariable UUID id, @RequestBody GroupRequestDTO group) {
         return groupService.update(id, group);
 
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable UUID id){
+    public void delete(@PathVariable UUID id) {
         groupService.delete(id);
     }
 
+    @PostMapping("/{groupId}/users")
+    public void addUser(@PathVariable UUID groupId,
+            @RequestBody GroupUserDTO dto) {
+
+        GroupUserDTO groupUserDTO = new GroupUserDTO(groupId, dto.idUser());
+
+        groupUserService.addUser(groupUserDTO);
+    }
+
+    @DeleteMapping("/{groupId}/users/{userId}")
+    public void removeUser(@PathVariable UUID groupId, @PathVariable UUID userId) {
+        groupUserService.removeUser(groupId, userId);
+    }
+
+    @PostMapping("/join")
+    public void joinGroup(@RequestBody String groupToken) {
+        groupUserService.joinGroup(groupToken);
+    }
 }

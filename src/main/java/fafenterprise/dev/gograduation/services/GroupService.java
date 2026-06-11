@@ -35,7 +35,7 @@ public class GroupService {
 
         GroupEntity newGroup = groupRepository.save(groupEntity);
 
-        groupUserService.create(groupRequestDTO.createdBy(), newGroup.getId());
+        groupUserService.create(newGroup.getId());
 
 
 
