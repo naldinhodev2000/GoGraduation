@@ -4,6 +4,7 @@ import fafenterprise.dev.gograduation.dto.GroupUserDTO;
 import fafenterprise.dev.gograduation.dto.request.GroupRequestDTO;
 import fafenterprise.dev.gograduation.dto.request.JoinGroupDTO;
 import fafenterprise.dev.gograduation.dto.response.GroupResponseDTO;
+import fafenterprise.dev.gograduation.dto.response.UserResponseDTO;
 import fafenterprise.dev.gograduation.services.GroupService;
 import fafenterprise.dev.gograduation.services.GroupUserService;
 import lombok.RequiredArgsConstructor;
@@ -66,4 +67,11 @@ public class GroupController {
     public void joinGroup(@RequestBody JoinGroupDTO dto) {
         groupUserService.joinGroup(dto.token());
     }
+
+    @GetMapping("{groupId}/members")
+    public List<UserResponseDTO> getClassmates(@PathVariable UUID groupId){
+        return groupUserService.getClassemates(groupId);
+    }
+
+
 }

@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import fafenterprise.dev.gograduation.dto.GroupUserDTO;
 import fafenterprise.dev.gograduation.dto.response.GroupResponseDTO;
+import fafenterprise.dev.gograduation.dto.response.UserResponseDTO;
 import fafenterprise.dev.gograduation.entity.relationship.GroupUserEntity;
 import fafenterprise.dev.gograduation.entity.uno.GroupEntity;
 import fafenterprise.dev.gograduation.entity.uno.UserEntity;
@@ -154,6 +155,18 @@ public class GroupUserService {
                 })
                 .toList();
 
+    }
+
+    public List<UserResponseDTO> getClassemates(UUID groupID) {
+
+        List<GroupUserEntity> groupUsers = groupUserRepo.findByGroup_Id(groupID);
+
+        return groupUsers.stream()
+                .map(groupUser -> {
+                    UserEntity user = groupUser.getUser();
+                    return new UserResponseDTO(user.getId(), user.getName(), user.getEmail(), user.getTelefone());
+                })
+                .toList();
     }
 
 }
