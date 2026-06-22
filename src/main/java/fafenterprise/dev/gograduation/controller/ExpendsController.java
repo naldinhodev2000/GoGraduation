@@ -29,11 +29,6 @@ public class ExpendsController{
         return expenseService.create(expenseRequestDTO);
     }
 
-    @GetMapping
-    public List<ExpenseResponseDTO> listAll(){
-        return expenseService.listAll();
-    }
-
     @PutMapping("/{id}")
     public ExpenseResponseDTO update(@PathVariable UUID id, @RequestBody ExpenseRequestDTO expense){
         return expenseService.update(id, expense);
@@ -43,4 +38,11 @@ public class ExpendsController{
     public void delete(@PathVariable UUID id){
         expenseService.delete(id);
     }
+
+    @GetMapping("/{groupId}/expenses")
+    public List<ExpenseResponseDTO> listByGroupId(@PathVariable UUID groupId){
+        return expenseService.listByGroupId(groupId);
+    }
+
+    
 }

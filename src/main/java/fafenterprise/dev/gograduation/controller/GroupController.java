@@ -69,9 +69,8 @@ public class GroupController {
     }
 
     @GetMapping("{groupId}/members")
-    public List<UserResponseDTO> getClassmates(@PathVariable UUID groupId){
+    public List<UserResponseDTO> getClassmates(@PathVariable UUID groupId) {
         return groupUserService.getClassemates(groupId);
     }
-
 
 }

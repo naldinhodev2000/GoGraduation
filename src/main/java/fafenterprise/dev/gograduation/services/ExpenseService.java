@@ -1,5 +1,6 @@
 package fafenterprise.dev.gograduation.services;
 
+import fafenterprise.dev.gograduation.repository.GroupUserRepository;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,8 +18,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ExpenseService{
 
+    private final GroupUserRepository groupUserRepository;
     final ExpenseRepository expenseRepository;
     final GroupRepository groupRepository;
+    final JwtService jwtService;
+
+    ExpenseService(GroupUserRepository groupUserRepository) {
+        this.groupUserRepository = groupUserRepository;
+    }
 
     public ExpenseResponseDTO create(ExpenseRequestDTO expenseRequestDTO){
         ExpenseEntity expense = new ExpenseEntity();
@@ -73,4 +80,23 @@ public class ExpenseService{
        ExpenseEntity entity =  expenseRepository.findById(id).orElseThrow();
        expenseRepository.delete(entity);
     }
+
+    public List<ExpenseResponseDTO> listByGroupId(UUID groupId) {
+
+    UUID userId = jwtService.getLoggedId();
+
+    if (!groupUserRepository.existsByUser_IdAndGroup_Id(userId, groupId)) {
+        throw new RuntimeException("User is not a member of the group");
+    }
+
+    return expenseRepository.findByGroup_Id(groupId)
+        .stream()
+        .map(expense -> new ExpenseResponseDTO(
+            expense.getId(),
+            expense.getGroup().getId(),
+            expense.getDescription(),
+            expense.getValue()
+        ))
+        .toList();
+}
 }
