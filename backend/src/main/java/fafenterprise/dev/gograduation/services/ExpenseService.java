@@ -23,9 +23,7 @@ public class ExpenseService{
     final GroupRepository groupRepository;
     final JwtService jwtService;
 
-    ExpenseService(GroupUserRepository groupUserRepository) {
-        this.groupUserRepository = groupUserRepository;
-    }
+    
 
     public ExpenseResponseDTO create(ExpenseRequestDTO expenseRequestDTO){
         ExpenseEntity expense = new ExpenseEntity();

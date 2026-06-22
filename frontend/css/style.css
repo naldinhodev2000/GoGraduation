@@ -1,0 +1,160 @@
+@import url('https://fonts.googleapis.com/css2?family=Sarala:wght@400;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+    list-style: none;
+    font-family: "Sarala", sans-serif;
+}
+
+:root {
+    --primary-color: #6F5A8A;
+    --secondary-color: #8A7FA3;
+    --accent-color: #B8B2A8;    
+    --background-site: #F7F8F9;
+    --text-main: #2B2E34;       
+    --text-muted: #7A7F87;     
+}
+
+body {
+    background-color: var(--background-site);
+    color: var(--text-main);
+}
+
+/*Seção de estilização do cabeçalho da página index*/
+#header-content {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: var(--secondary-color);
+}
+
+#site-logo {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+}
+
+#nav-bar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-bar-item {
+    color: #ffffff;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+a {
+    color: inherit;
+}
+
+#button-login {
+    border: none;
+    border-radius: 15px;
+    width: 120px;
+    height: 35px;
+    background-color: #739bac;
+    color: #ffffff;
+    cursor: pointer;
+    font-weight: bold;
+    transition: opacity 0.2s;
+}
+
+#button-login:hover {
+    opacity: 0.9;
+}
+
+#button-sign {
+    border: 1px solid #ffffff;
+    border-radius: 15px;
+    width: 100px;
+    height: 35px;
+    background-color: transparent;
+    color: #ffffff;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+
+#button-sign:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/*Seção de estilização do container de conteúdo principal da página index*/
+#main-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 75vh;
+    padding: 2rem;
+}
+
+.hero-container {
+    text-align: center;
+    max-width: 800px;
+}
+
+.hero-container h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+    line-height: 1.2;
+}
+
+#dynamic-text {
+    color: var(--accent-color);
+}
+
+.cursor {
+    font-weight: 100;
+    color: var(--accent-color);
+    animation: blink 0.7s infinite;
+}
+
+.hero-container p {
+    font-size: 1.25rem;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+}
+
+.cta-button {
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #fff;
+    background-color: var(--secondary-color);
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.cta-button:hover {
+    background-color: #2e6b30;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+/*Seção de estilização do container de conteúdo do rodapé da página index*/
+#footer-content {
+    background-color: var(--primary-color);
+    color: #ffffff;
+    padding: 20px;
+    text-align: center;
+    margin-top: auto;      /* Garante que fique no final */
+}

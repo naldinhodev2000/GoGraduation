@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <title>Bora Formar</title>
+        <link rel="stylesheet" href="css/style.css">
+    </head>
+
+    <body>
+        <header id="header-content">
+            <img src="assets/logo.jpg" alt="site-logo-bora-formar" id="site-logo">
+            <nav id="nav-bar">
+                <li class="nav-bar-item"><a href="#">Início</a></li>
+                <li class="nav-bar-item"><a href="#">Sobre nós</a></li>
+                <button id="button-login" onclick=login()>Acessar conta</button>
+                <button id="button-sign" onlick=sign()>Criar conta</button>
+            </nav>
+
+        </header>
+
+        <main id="main-content">
+            <div class="hero-container">
+                <h1>Perfeito para <span id="dynamic-text"></span><span class="cursor">|</span></h1>
+                <p>Gestão estruturada, eficiente e adequada ao contexto acadêmico.</p>
+                <button class="cta-button">Conheça Agora</button>
+            </div>
+        </main>
+
+        <footer id="footer-content">
+            <p>© 2026 | Bora formar</p>
+        </footer>
+        <script src="js/typewriter.js"></script>
+        <script>
+            function login() {
+                window.location.src = "pages/login.html";
+                window.location.reload();
+            }
+
+            function sign() {
+                window.location.src = "pages/sign.html";
+            }
+        </script>
+    </body>
+</html>
