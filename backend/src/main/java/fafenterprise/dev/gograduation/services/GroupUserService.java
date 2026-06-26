@@ -169,4 +169,18 @@ public class GroupUserService {
                 .toList();
     }
 
+    public boolean isUserInGroup(UUID groupId) {
+        UUID userId = jwtService.getLoggedId();
+
+        return groupUserRepo.existsByUser_IdAndGroup_IdAndStatus(userId, groupId, GroupUserStatus.ACTIVE);
+    }
+
+    public boolean isUserAdmin(UUID groupId) {
+        UUID userId = jwtService.getLoggedId();
+
+        GroupUserEntity groupUser = groupUserRepo.findByUser_IdAndGroup_Id(userId, groupId)
+                .orElseThrow(() -> new RuntimeException("User is not a member of the group"));
+
+        return groupUser.getRole() == Role.ADMIN;
+    }
 }

@@ -11,6 +11,7 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Entity
@@ -36,9 +37,6 @@ public class MonthlyFeeEntity {
 
     @Column(name = "end_date")
     private LocalDate endDate;
-
-    @Column(name = "due_date")
-    private Integer dueDate;
 
 
     @OneToMany(mappedBy = "monthlyFee")

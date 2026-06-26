@@ -23,4 +23,6 @@ public interface GroupUserRepository extends JpaRepository<GroupUserEntity, UUID
                         UUID groupId);
 
         List<GroupUserEntity> findByUserIdAndStatus(UUID userId, GroupUserStatus status);
+
+        boolean existsByUser_IdAndGroup_IdAndStatus(UUID userId, UUID groupId, GroupUserStatus active);
 }

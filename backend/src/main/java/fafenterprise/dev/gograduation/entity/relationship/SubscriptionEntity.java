@@ -36,6 +36,8 @@ public class SubscriptionEntity {
     @Column(name = "subscription_date")
     private LocalDateTime subscriptionDate;
 
+    
+
     @Column(name = "status")
     private SubscriptionStatus status;
 
