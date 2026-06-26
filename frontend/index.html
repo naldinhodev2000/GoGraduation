@@ -5,40 +5,36 @@
         <title>Bora Formar</title>
         <link rel="stylesheet" href="css/style.css">
     </head>
-
+    
     <body>
         <header id="header-content">
-            <img src="assets/logo.jpg" alt="site-logo-bora-formar" id="site-logo">
-            <nav id="nav-bar">
-                <li class="nav-bar-item"><a href="#">Início</a></li>
-                <li class="nav-bar-item"><a href="#">Sobre nós</a></li>
-                <button id="button-login" onclick=login()>Acessar conta</button>
-                <button id="button-sign" onlick=sign()>Criar conta</button>
+            <img src="assets/logo.png" alt="Logo do Bora Formar" id="site-logo">
+            
+            <nav id="nav-bar" aria-label="Navegação principal">
+                <ul class="nav-links">
+                    <li class="nav-bar-item"><a href="#">Início</a></li>
+                    <li class="nav-bar-item"><a href="#">Sobre nós</a></li>
+                </ul>
+                
+                <div class="nav-actions">
+                    <a href="pages/login.html" id="button-login" class="nav-button">Acessar conta</a>
+                    <a href="pages/register.html" id="button-sign" class="nav-button secondary">Criar conta</a>
+                </div>
             </nav>
-
         </header>
 
         <main id="main-content">
-            <div class="hero-container">
-                <h1>Perfeito para <span id="dynamic-text"></span><span class="cursor">|</span></h1>
+            <section class="hero-container">
+                <h1>Perfeito para <span id="dynamic-text"></span> <span class="cursor" aria-hidden="true">|</span></h1>
                 <p>Gestão estruturada, eficiente e adequada ao contexto acadêmico.</p>
-                <button class="cta-button">Conheça Agora</button>
-            </div>
+                <a href="#sobre" class="cta-button">Conheça Agora</a>
+            </section>
         </main>
 
         <footer id="footer-content">
-            <p>© 2026 | Bora formar</p>
+            <p>© 2026 | Bora Formar</p>
         </footer>
-        <script src="js/typewriter.js"></script>
-        <script>
-            function login() {
-                window.location.src = "pages/login.html";
-                window.location.reload();
-            }
 
-            function sign() {
-                window.location.src = "pages/sign.html";
-            }
-        </script>
+        <script src="js/typewriter.js"></script>
     </body>
 </html>

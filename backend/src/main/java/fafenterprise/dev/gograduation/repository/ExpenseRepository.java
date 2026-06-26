@@ -1,6 +1,5 @@
 package fafenterprise.dev.gograduation.repository;
 
-import fafenterprise.dev.gograduation.dto.response.ExpenseResponseDTO;
 import fafenterprise.dev.gograduation.entity.uno.ExpenseEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
