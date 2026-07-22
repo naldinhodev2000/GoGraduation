@@ -12,7 +12,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,6 +38,10 @@ public class GroupEntity {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal goal;
 
+    @JoinColumn(name = "cash_id")
+    @OneToOne(fetch = FetchType.LAZY)
+    private Cash cash;
+    
     @Column(nullable = false)
     private String team;
 
