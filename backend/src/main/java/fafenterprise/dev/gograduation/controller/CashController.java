@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class CashController {
     final CashService cashService;
     @PostMapping()
-    public TransactionEntity addTransaction(@RequestBody TransactionDTO transaction) {
+    public TransactionDTO addTransaction(@RequestBody TransactionDTO transaction) {
         return cashService.addTransaction(transaction);
         
         
