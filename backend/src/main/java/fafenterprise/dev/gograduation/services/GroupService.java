@@ -1,6 +1,7 @@
 package fafenterprise.dev.gograduation.services;
 
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -10,12 +11,14 @@ import org.springframework.stereotype.Service;
 
 import fafenterprise.dev.gograduation.dto.request.GroupRequestDTO;
 import fafenterprise.dev.gograduation.dto.response.GroupResponseDTO;
+import fafenterprise.dev.gograduation.entity.uno.Cash;
 import fafenterprise.dev.gograduation.entity.uno.GroupEntity;
 import fafenterprise.dev.gograduation.repository.GroupRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+
 public class GroupService {
 
     final GroupRepository groupRepository;
@@ -24,6 +27,10 @@ public class GroupService {
     public GroupResponseDTO create(GroupRequestDTO groupRequestDTO) {
 
         GroupEntity groupEntity = new GroupEntity();
+        Cash cash = new Cash();
+        cash.setValue(BigDecimal.ZERO);
+
+
 
         groupEntity.setName(groupRequestDTO.name());
         groupEntity.setCourse(groupRequestDTO.course());
@@ -32,6 +39,7 @@ public class GroupService {
         groupEntity.setToken(RandomStringUtils.secure().nextAlphanumeric(7));
         groupEntity.setCreatedAt(LocalDateTime.now());
         groupEntity.setUpdatedAt(LocalDateTime.now());
+        groupEntity.setCash(cash);
 
         GroupEntity newGroup = groupRepository.save(groupEntity);
 

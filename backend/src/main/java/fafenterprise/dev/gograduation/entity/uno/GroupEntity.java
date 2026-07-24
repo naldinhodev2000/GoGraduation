@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 import fafenterprise.dev.gograduation.entity.relationship.GroupUserEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -39,7 +40,7 @@ public class GroupEntity {
     private BigDecimal goal;
 
     @JoinColumn(name = "cash_id")
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Cash cash;
     
     @Column(nullable = false)
@@ -59,9 +60,6 @@ public class GroupEntity {
 
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
     private List<GroupUserEntity> members;
-
-    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
-    private List<TransactionEntity> transactions;
 
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
     private List<MonthlyFeeEntity> monthlyFees;

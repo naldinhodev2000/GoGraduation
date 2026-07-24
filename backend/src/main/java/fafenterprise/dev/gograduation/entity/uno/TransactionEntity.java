@@ -46,8 +46,8 @@ public class TransactionEntity {
     private TransactionType type;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id", nullable = false)
-    private GroupEntity group;
+    @JoinColumn(nullable = false)
+    private Cash cashRegister;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
