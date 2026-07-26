@@ -68,7 +68,7 @@ public class MonthlyFeeService {
     }
 
 
-    List<MonthlyFeeDTO> getAllByGroupId(UUID groupId) {
+    public List<MonthlyFeeDTO> getAllByGroupId(UUID groupId) {
         
         if(!groupUserService.isUserInGroup(groupId)){
             throw new RuntimeException("User is not a member of the group");

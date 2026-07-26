@@ -23,6 +23,7 @@ public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final GroupRepository groupRepository;
     private final UserRepository userRepository;
+    private final CashService cashService;
 
     public TransactionDTO addTransaction(TransactionDTO transactionDTO) {
 
@@ -46,9 +47,9 @@ public class TransactionService {
         );
         transaction.setCashRegister(cash);
         transaction.setUser(user);
-
+        
         transactionRepository.save(transaction);
-
+        cashService.updateCash(transactionDTO.groupId());
         return transactionDTO;
     }
 
