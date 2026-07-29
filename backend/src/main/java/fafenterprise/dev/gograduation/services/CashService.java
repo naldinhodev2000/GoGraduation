@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import fafenterprise.dev.gograduation.dto.RemainingToGoalDTO;
 import fafenterprise.dev.gograduation.dto.response.CashResponseDTO;
 import fafenterprise.dev.gograduation.entity.uno.Cash;
 import fafenterprise.dev.gograduation.entity.uno.GroupEntity;
@@ -57,4 +58,10 @@ public class CashService {
 
         return total;
     }
+
+    public RemainingToGoalDTO getRemainingToGoal(UUID groupID){
+        GroupEntity groupEntity = groupRepository.findById(groupID).orElseThrow();
+        return new RemainingToGoalDTO(groupEntity.getName(), groupEntity.getGoal(), getCash(groupID).totalCash());
+    }   
+
 }
