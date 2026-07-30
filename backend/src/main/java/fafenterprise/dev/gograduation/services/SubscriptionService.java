@@ -1,3 +1,4 @@
+
 package fafenterprise.dev.gograduation.services;
 
 import java.time.LocalDateTime;
@@ -19,35 +20,50 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class SubscriptionService {
+
     private final MonthlyFeeRepository monthlyFeeRepository;
     private final UserRepository userRepository;
     private final SubscriptionRepository subscriptionRepository;
-    
+
     public SubscriptionEntity subscribe(SubscriptionDTO subscriptionDTO) {
-    MonthlyFeeEntity monthlyFee = monthlyFeeRepository.findById(subscriptionDTO.monthlyFeeId())
-            .orElseThrow();
 
-    UserEntity user = userRepository.findById(subscriptionDTO.userId())
-            .orElseThrow();
+        MonthlyFeeEntity monthlyFee = monthlyFeeRepository
+                .findById(subscriptionDTO.monthlyFeeId())
+                .orElseThrow();
 
-    SubscriptionEntity subscription = new SubscriptionEntity();
+        UserEntity user = userRepository
+                .findById(subscriptionDTO.userId())
+                .orElseThrow();
 
-    subscription.setMonthlyFee(monthlyFee);
-    subscription.setUser(user);
-    subscription.setSubscriptionDate(LocalDateTime.now());
-    subscription.setStatus(SubscriptionStatus.ACTIVE);
+        SubscriptionEntity subscription = new SubscriptionEntity();
 
-    return subscriptionRepository.save(subscription);
-}
+        subscription.setMonthlyFee(monthlyFee);
+        subscription.setUser(user);
+        subscription.setSubscriptionDate(LocalDateTime.now());
+        subscription.setStatus(SubscriptionStatus.ACTIVE);
 
-    public void changeStatus(UUID SubscriptionId, SubscriptionStatus status){
-        SubscriptionEntity subscriptionEntity = subscriptionRepository.findById(SubscriptionId).orElseThrow();
+        return subscriptionRepository.save(subscription);
+    }
+
+    public void changeStatus(
+            UUID subscriptionId,
+            SubscriptionStatus status) {
+
+        SubscriptionEntity subscriptionEntity = subscriptionRepository
+                .findById(subscriptionId)
+                .orElseThrow();
+
         subscriptionEntity.setStatus(status);
+
         subscriptionRepository.save(subscriptionEntity);
     }
 
-
-    public List<SubscriptionEntity> listAll(){
+    public List<SubscriptionEntity> listAll() {
         return subscriptionRepository.findAll();
+    }
+
+    public List<SubscriptionEntity> listByGroup(UUID groupId) {
+        return subscriptionRepository
+                .findByMonthlyFeeGroupId(groupId);
     }
 }

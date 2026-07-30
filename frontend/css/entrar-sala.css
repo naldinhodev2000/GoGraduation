@@ -20,12 +20,11 @@ body {
     padding: 16px 20px;
 }
 
-#menu-toggle {
-    background: none;
-    border: none;
-    font-size: 22px;
-    cursor: pointer;
+#back-link {
     color: #000;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
 }
 
 #header-content h1 {
@@ -88,4 +87,14 @@ body {
 
 .hidden {
     display: none;
+}
+
+@media (max-width: 480px) {
+    #main-content {
+        padding: 24px 16px;
+    }
+    form {
+        width: 100%;
+        max-width: 320px;
+    }
 }

@@ -34,7 +34,7 @@ public class CashController {
         return cashService.getCash(groupId);
     }
 
-  
+
     @PostMapping
     public TransactionDTO addTransaction(
             @RequestBody TransactionDTO transaction) {

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <title>Bora Formar - Criar Rifa</title>
+        <link rel="stylesheet" href="../css/criar-rifa.css">
+    </head>
+    <body>
+        <header id="header-content">
+            <button id="menu-toggle" aria-label="Menu">☰</button>
+            <h1>Criar Rifa</h1>
+        </header>
+        <main id="main-content">
+            <form id="form-rifa">
+                <label>Nome:</label>
+                <input id="name" class="form-item" type="text" required>
+                <label>Valor do número:</label>
+                <input id="value" class="form-item" type="number" step="0.01" required>
+
+                <p id="form-error" class="hidden"></p>
+
+                <input id="button-criar" type="submit" value="Criar">
+            </form>
+        </main>
+
+        <script type="module">
+            import raffleService from "../js/services/raffleService.js";
+
+            const params = new URLSearchParams(window.location.search);
+            const groupId = params.get("id");
+
+            const form = document.getElementById("form-rifa");
+            const errorMessage = document.getElementById("form-error");
+
+            if (!groupId) {
+                document.getElementById("back-link").href = `sala.html?id=${groupId}`;
+            }
+
+            form.addEventListener("submit", async (event) => {
+                event.preventDefault();
+                errorMessage.classList.add("hidden");
+
+                const name = document.getElementById("name").value;
+                const value = document.getElementById("value").value;
+
+                try {
+                    await raffleService.create({ groupId, name, value, total: null });
+                    window.location.href = `sala.html?id=${groupId}`;
+                } catch (error) {
+                    errorMessage.textContent = error.message || "Não foi possível criar a rifa.";
+                    errorMessage.classList.remove("hidden");
+                }
+            });
+        </script>
+    </body>
+</html>

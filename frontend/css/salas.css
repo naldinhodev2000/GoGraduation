@@ -101,3 +101,67 @@ body {
 .hidden {
     display: none;
 }
+
+#side-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 220px;
+    background-color: #ffffff;
+    border-right: 1px solid #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px;
+    transform: translateX(-100%);
+    transition: transform 0.2s ease;
+    z-index: 20;
+}
+
+#side-menu.open {
+    transform: translateX(0);
+}
+
+#side-menu a, #side-menu button {
+    background: none;
+    border: none;
+    text-align: left;
+    font-size: 15px;
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+    padding: 8px 0;
+}
+
+#menu-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    display: none;
+    z-index: 10;
+}
+
+#menu-overlay.open {
+    display: block;
+}
+
+@media (max-width: 480px) {
+    #main-content {
+        padding: 12px;
+    }
+    #room-list {
+        max-width: 100%;
+    }
+    #add-button {
+        right: 16px;
+        bottom: 16px;
+    }
+    #add-menu {
+        right: 16px;
+        bottom: 76px;
+    }
+    #side-menu {
+        width: 80vw;
+    }
+}

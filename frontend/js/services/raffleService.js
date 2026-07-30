@@ -1,7 +1,7 @@
 import apiClient from "../apiClient.js";
 import { createRaffleRequest } from "../dtos/raffleRequest.js";
 
-const RAFFLE_BASE = "/raffles";
+const RAFFLE_BASE = "";
 
 const raffleService = {
     async create({ groupId, name, value, total }) {

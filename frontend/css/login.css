@@ -96,3 +96,10 @@ body {
 .hidden {
     display: none;
 }
+
+@media (max-width: 480px) {
+    #form-login {
+        width: 90%;
+        max-width: 320px;
+    }
+}

@@ -1,3 +1,4 @@
+
 package fafenterprise.dev.gograduation.controller;
 
 import java.util.List;
@@ -17,32 +18,44 @@ import fafenterprise.dev.gograduation.dto.response.RaffleResponseDTO;
 import fafenterprise.dev.gograduation.services.RaffleService;
 import lombok.RequiredArgsConstructor;
 
-
 @RestController
-@RequestMapping
+@RequestMapping("/raffles")
 @RequiredArgsConstructor
 public class RaffleController {
 
-    final RaffleService raffleService;
-
+    private final RaffleService raffleService;
 
     @PostMapping
-    public RaffleResponseDTO create(@RequestBody RaffleRequestDTO raffleRequestDTO){
+    public RaffleResponseDTO create(
+            @RequestBody RaffleRequestDTO raffleRequestDTO) {
+
         return raffleService.create(raffleRequestDTO);
     }
-    
+
     @GetMapping
-    public List<RaffleResponseDTO> listAll(){
+    public List<RaffleResponseDTO> listAll() {
         return raffleService.listAll();
     }
 
+    @GetMapping("/group/{groupId}")
+    public List<RaffleResponseDTO> listByGroup(
+            @PathVariable UUID groupId) {
+
+        return raffleService.listByGroup(groupId);
+    }
+
     @PutMapping("/{id}")
-    public RaffleResponseDTO update(@PathVariable UUID id, @RequestBody RaffleRequestDTO raffleRequestDTO){
+    public RaffleResponseDTO update(
+            @PathVariable UUID id,
+            @RequestBody RaffleRequestDTO raffleRequestDTO) {
+
         return raffleService.update(id, raffleRequestDTO);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable UUID id){
+    public void delete(@PathVariable UUID id) {
         raffleService.delete(id);
     }
+
 }
+

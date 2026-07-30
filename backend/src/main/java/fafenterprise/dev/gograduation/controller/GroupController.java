@@ -1,3 +1,4 @@
+
 package fafenterprise.dev.gograduation.controller;
 
 import fafenterprise.dev.gograduation.dto.GroupUserDTO;
@@ -20,37 +21,65 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import fafenterprise.dev.gograduation.dto.response.MemberSummaryDTO;
+import fafenterprise.dev.gograduation.services.MemberSummaryService;
+
 
 @RestController
 @RequestMapping("/groups")
 @RequiredArgsConstructor
 public class GroupController {
-    final GroupService groupService;
-    final GroupUserService groupUserService;
+
+    private final GroupService groupService;
+    private final GroupUserService groupUserService;
+    private final MemberSummaryService memberSummaryService;
+
+    @GetMapping("/{groupId}/members/{userId}/summary")
+    public MemberSummaryDTO getMemberSummary(
+            @PathVariable UUID groupId,
+            @PathVariable UUID userId) {
+
+        return memberSummaryService.getSummary(groupId, userId);
+    }
 
     @PostMapping
-    public GroupResponseDTO create(@RequestBody GroupRequestDTO groupRequestDTO) {
+    public GroupResponseDTO create(
+            @RequestBody GroupRequestDTO groupRequestDTO) {
+
         return groupService.create(groupRequestDTO);
     }
 
     @GetMapping
     public List<GroupResponseDTO> listAll() {
+
         return groupService.listAll();
     }
 
-    @PutMapping("/{id}")
-    public GroupResponseDTO update(@PathVariable UUID id, @RequestBody GroupRequestDTO group) {
-        return groupService.update(id, group);
+    @GetMapping("/{id}")
+    public GroupResponseDTO findById(
+            @PathVariable UUID id) {
 
+        return groupService.findById(id);
+    }
+
+    @PutMapping("/{id}")
+    public GroupResponseDTO update(
+            @PathVariable UUID id,
+            @RequestBody GroupRequestDTO group) {
+
+        return groupService.update(id, group);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable UUID id) {
+    public void delete(
+            @PathVariable UUID id) {
+
         groupService.delete(id);
     }
 
     @PostMapping("/{groupId}/users")
-    public void addUser(@PathVariable UUID groupId,
+    public void addUser(
+            @PathVariable UUID groupId,
             @RequestBody GroupUserDTO dto) {
 
         GroupUserDTO groupUserDTO = new GroupUserDTO(groupId, dto.idUser());
@@ -59,18 +88,24 @@ public class GroupController {
     }
 
     @DeleteMapping("/{groupId}/users/{userId}")
-    public void removeUser(@PathVariable UUID groupId, @PathVariable UUID userId) {
+    public void removeUser(
+            @PathVariable UUID groupId,
+            @PathVariable UUID userId) {
+
         groupUserService.removeUser(groupId, userId);
     }
 
     @PostMapping("/join")
-    public void joinGroup(@RequestBody JoinGroupDTO dto) {
+    public void joinGroup(
+            @RequestBody JoinGroupDTO dto) {
+
         groupUserService.joinGroup(dto.token());
     }
 
-    @GetMapping("{groupId}/members")
-    public List<UserResponseDTO> getClassmates(@PathVariable UUID groupId) {
+    @GetMapping("/{groupId}/members")
+    public List<UserResponseDTO> getClassmates(
+            @PathVariable UUID groupId) {
+
         return groupUserService.getClassemates(groupId);
     }
-
 }

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <title>Bora Formar - Sala</title>
+        <link rel="stylesheet" href="../css/sala.css">
+    </head>
+    <body>
+        <header id="header-content">
+            <button id="menu-toggle" aria-label="Menu">☰</button>
+            <a id="back-link" href="salas.html">‹ Salas</a>
+            <div id="goal-info">
+                <span id="goal-label">Meta</span>
+                <span id="goal-value">--</span>
+            </div>
+            <div id="balance-info">
+                <span id="balance-label">Saldo</span>
+                <span id="balance-value">--</span>
+            </div>
+        </header>
+
+        <div id="group-info">
+            <span id="group-name">--</span>
+            <div id="group-token-row">
+                <span>Código da turma:</span>
+                <span id="group-token">--</span>
+                <button id="copy-token-button" aria-label="Copiar código">Copiar</button>
+            </div>
+        </div>
+
+        <main id="main-content">
+            <button id="link-lancar" class="action-button">Lançar movimentação</button>
+            <button id="link-mensalidade" class="action-button">Mensalidade</button>
+            <button id="link-rifa" class="action-button">Criar Rifa</button>
+
+            <section id="raffle-section">
+                <h2>Rifas</h2>
+                <ul id="raffle-list"></ul>
+                <p id="raffle-empty" class="hidden">Nenhuma rifa criada ainda.</p>
+            </section>
+
+            <p id="error-message" class="hidden"></p>
+        </main>
+
+        <nav id="side-menu">
+            <a href="salas.html">Início</a>
+            <button id="logout-button">Sair</button>
+        </nav>
+        <div id="menu-overlay"></div>
+
+        <script type="module">
+            import cashService from "../js/services/cashService.js";
+            import authService from "../js/services/authService.js";
+            import userService from "../js/services/userService.js";
+            import raffleService from "../js/services/raffleService.js";
+
+            if (!authService.isAuthenticated()) {
+                window.location.href = "login.html";
+            }
+
+            const params = new URLSearchParams(window.location.search);
+            const groupId = params.get("id");
+
+            if (!groupId) {
+                window.location.href = "salas.html";
+            }
+
+            const goalValue = document.getElementById("goal-value");
+            const balanceValue = document.getElementById("balance-value");
+            const errorMessage = document.getElementById("error-message");
+            const menuToggle = document.getElementById("menu-toggle");
+            const sideMenu = document.getElementById("side-menu");
+            const menuOverlay = document.getElementById("menu-overlay");
+            const logoutButton = document.getElementById("logout-button");
+            const groupName = document.getElementById("group-name");
+            const groupToken = document.getElementById("group-token");
+            const copyTokenButton = document.getElementById("copy-token-button");
+            const raffleList = document.getElementById("raffle-list");
+            const raffleEmpty = document.getElementById("raffle-empty");
+
+            menuToggle.addEventListener("click", () => {
+                sideMenu.classList.toggle("open");
+                menuOverlay.classList.toggle("open");
+            });
+            menuOverlay.addEventListener("click", () => {
+                sideMenu.classList.remove("open");
+                menuOverlay.classList.remove("open");
+            });
+            logoutButton.addEventListener("click", () => {
+                authService.logout();
+                window.location.href = "login.html";
+            });
+
+            document.getElementById("link-lancar").addEventListener("click", () => {
+                window.location.href = `lancar-movimentacao.html?id=${groupId}`;
+            });
+            document.getElementById("link-mensalidade").addEventListener("click", () => {
+                window.location.href = `mensalidade.html?id=${groupId}`;
+            });
+            document.getElementById("link-rifa").addEventListener("click", () => {
+                window.location.href = `criar-rifa.html?id=${groupId}`;
+            });
+
+            copyTokenButton.addEventListener("click", () => {
+                navigator.clipboard.writeText(groupToken.textContent);
+                copyTokenButton.textContent = "Copiado!";
+                setTimeout(() => {
+                    copyTokenButton.textContent = "Copiar";
+                }, 1500);
+            });
+
+            async function loadDashboard() {
+                try {
+                    const goalInfo = await cashService.getRemainingToGoal(groupId);
+                    goalValue.textContent = `R$ ${Number(goalInfo.goal).toFixed(2)}`;
+                    balanceValue.textContent = `R$ ${Number(goalInfo.balance).toFixed(2)}`;
+                } catch (error) {
+                    errorMessage.textContent = error.message || "Não foi possível carregar os dados da sala.";
+                    errorMessage.classList.remove("hidden");
+                }
+            }
+
+            async function loadGroupInfo() {
+                try {
+                    const groups = await userService.getJoinedGroups();
+                    const group = groups.find((g) => g.id === groupId);
+
+                    if (group) {
+                        groupName.textContent = group.name;
+                        groupToken.textContent = group.token;
+                    }
+                } catch (error) {
+                    groupName.textContent = "Sala";
+                }
+            }
+
+            async function loadRaffles() {
+                try {
+                    const raffles = await raffleService.listAll();
+                    const groupRaffles = raffles.filter((r) => r.groupId === groupId);
+
+                    if (groupRaffles.length === 0) {
+                        raffleEmpty.classList.remove("hidden");
+                        return;
+                    }
+
+                    groupRaffles.forEach((raffle) => {
+                        const item = document.createElement("li");
+                        item.textContent = `${raffle.name} — R$ ${Number(raffle.value).toFixed(2)} por número`;
+                        raffleList.appendChild(item);
+                    });
+                } catch (error) {
+                    raffleEmpty.textContent = "Não foi possível carregar as rifas.";
+                    raffleEmpty.classList.remove("hidden");
+                }
+            }
+
+            loadDashboard();
+            loadGroupInfo();
+            loadRaffles();
+        </script>
+    </body>
+</html>

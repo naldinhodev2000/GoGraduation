@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <title>Bora Formar - Mensalidade</title>
+        <link rel="stylesheet" href="../css/mensalidade.css">
+    </head>
+    <body>
+        <header id="header-content">
+            <button id="menu-toggle" aria-label="Menu">☰</button>
+            <h1>Mensalidade</h1>
+        </header>
+        <main id="main-content">
+            <form id="form-mensalidade">
+                <label>Valor:</label>
+                <input id="value" class="form-item" type="number" step="0.01" required>
+                <label>Início:</label>
+                <input id="start-date" class="form-item" type="date" required>
+                <label>Fim:</label>
+                <input id="end-date" class="form-item" type="date" required>
+
+                <p id="form-error" class="hidden"></p>
+
+                <input id="button-criar" type="submit" value="Criar">
+            </form>
+        </main>
+
+        <script type="module">
+            import monthlyFeeService from "../js/services/monthlyFeeService.js";
+
+            const params = new URLSearchParams(window.location.search);
+            const groupId = params.get("id");
+
+            const form = document.getElementById("form-mensalidade");
+            const errorMessage = document.getElementById("form-error");
+
+            if (!groupId) {
+                document.getElementById("back-link").href = `sala.html?id=${groupId}`;
+            }
+
+            form.addEventListener("submit", async (event) => {
+                event.preventDefault();
+                errorMessage.classList.add("hidden");
+
+                const value = document.getElementById("value").value;
+                const startDate = document.getElementById("start-date").value;
+                const endDate = document.getElementById("end-date").value;
+
+                try {
+                    await monthlyFeeService.create({ groupId, value, startDate, endDate });
+                    window.location.href = `sala.html?id=${groupId}`;
+                } catch (error) {
+                    errorMessage.textContent = error.message || "Não foi possível criar a mensalidade.";
+                    errorMessage.classList.remove("hidden");
+                }
+            });
+        </script>
+    </body>
+</html>

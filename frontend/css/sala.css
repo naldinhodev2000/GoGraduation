@@ -1,0 +1,208 @@
+@import url('https://fonts.googleapis.com/css2?family=Sarala:wght@400;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Sarala", sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background-color: #ffffff;
+    color: #000;
+}
+
+#header-content {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 16px 20px;
+    flex-wrap: wrap;
+}
+
+#menu-toggle {
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    color: #000;
+}
+
+#back-link {
+    color: #000;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+#goal-info, #balance-info {
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
+}
+
+#goal-value, #balance-value {
+    background-color: #9fb1af;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-weight: 600;
+    margin-top: 4px;
+}
+
+#group-info {
+    padding: 0 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+#group-name {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+#group-token-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+}
+
+#group-token {
+    background-color: #9fb1af;
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+#copy-token-button {
+    border: none;
+    border-radius: 6px;
+    background-color: #e0e0e0;
+    padding: 4px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    color: #000;
+}
+
+#main-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 24px 20px 40px;
+}
+
+.action-button {
+    width: 240px;
+    height: 40px;
+    border: none;
+    border-radius: 8px;
+    background-color: #9fb1af;
+    font-weight: 600;
+    cursor: pointer;
+    color: #000;
+}
+
+#raffle-section {
+    width: 100%;
+    max-width: 320px;
+    margin-top: 12px;
+}
+
+#raffle-section h2 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+#raffle-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+#raffle-list li {
+    background-color: #9fb1af;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 14px;
+}
+
+#raffle-empty {
+    color: #555;
+    font-size: 13px;
+}
+
+#error-message {
+    color: #b00020;
+    font-size: 13px;
+}
+
+#side-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 220px;
+    background-color: #ffffff;
+    border-right: 1px solid #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px;
+    transform: translateX(-100%);
+    transition: transform 0.2s ease;
+    z-index: 20;
+}
+
+#side-menu.open {
+    transform: translateX(0);
+}
+
+#side-menu a, #side-menu button {
+    background: none;
+    border: none;
+    text-align: left;
+    font-size: 15px;
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+    padding: 8px 0;
+}
+
+#menu-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    display: none;
+    z-index: 10;
+}
+
+#menu-overlay.open {
+    display: block;
+}
+
+.hidden {
+    display: none;
+}
+
+@media (max-width: 480px) {
+    #header-content {
+        gap: 12px;
+        padding: 12px;
+    }
+    .action-button {
+        width: 100%;
+        max-width: 280px;
+    }
+    #raffle-section {
+        max-width: 100%;
+    }
+    #side-menu {
+        width: 80vw;
+    }
+}

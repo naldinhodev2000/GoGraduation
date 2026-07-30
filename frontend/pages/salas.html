@@ -19,6 +19,11 @@
             <a id="link-criar-sala" href="criar-sala.html">Criar Sala</a>
             <a id="link-entrar-sala" href="entrar-sala.html">Participar</a>
         </div>
+        <nav id="side-menu">
+            <a href="salas.html">Início</a>
+            <button id="logout-button">Sair</button>
+        </nav>
+        <div id="menu-overlay"></div>
 
         <script type="module">
             import userService from "../js/services/userService.js";
@@ -32,9 +37,26 @@
             const emptyState = document.getElementById("empty-state");
             const addButton = document.getElementById("add-button");
             const addMenu = document.getElementById("add-menu");
+            const menuToggle = document.getElementById("menu-toggle");
+            const sideMenu = document.getElementById("side-menu");
+            const menuOverlay = document.getElementById("menu-overlay");
+            const logoutButton = document.getElementById("logout-button");
 
             addButton.addEventListener("click", () => {
                 addMenu.classList.toggle("open");
+            });
+
+            menuToggle.addEventListener("click", () => {
+                sideMenu.classList.toggle("open");
+                menuOverlay.classList.toggle("open");
+            });
+            menuOverlay.addEventListener("click", () => {
+                sideMenu.classList.remove("open");
+                menuOverlay.classList.remove("open");
+            });
+            logoutButton.addEventListener("click", () => {
+                authService.logout();
+                window.location.href = "login.html";
             });
 
             async function loadGroups() {

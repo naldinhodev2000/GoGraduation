@@ -4,11 +4,10 @@ package fafenterprise.dev.gograduation.controller;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,25 +26,34 @@ public class SubscriptionController {
     private final SubscriptionService subscriptionService;
 
     @PostMapping
-    public ResponseEntity<SubscriptionDTO> subscribe(@RequestBody SubscriptionDTO subscriptionDTO) {
+    public SubscriptionEntity subscribe(
+            @RequestBody SubscriptionDTO subscriptionDTO) {
 
-        subscriptionService.subscribe(subscriptionDTO);
-
-        return ResponseEntity.ok(subscriptionDTO);
-    }
-
-    @PatchMapping("/{id}/status")
-    public ResponseEntity<Void> changeStatus(
-            @PathVariable UUID id,
-            @RequestBody SubscriptionStatus status) {
-
-        subscriptionService.changeStatus(id, status);
-
-        return ResponseEntity.noContent().build();
+        return subscriptionService.subscribe(subscriptionDTO);
     }
 
     @GetMapping
-    public ResponseEntity<List<SubscriptionEntity>> listAll() {
-        return ResponseEntity.ok(subscriptionService.listAll());
+    public List<SubscriptionEntity> listAll() {
+
+        return subscriptionService.listAll();
+    }
+
+    @GetMapping("/group/{groupId}")
+    public List<SubscriptionEntity> listByGroup(
+            @PathVariable UUID groupId) {
+
+        return subscriptionService.listByGroup(groupId);
+    }
+
+    @PutMapping("/{subscriptionId}/status")
+    public void changeStatus(
+            @PathVariable UUID subscriptionId,
+            @RequestBody SubscriptionStatus status) {
+
+        subscriptionService.changeStatus(
+                subscriptionId,
+                status
+        );
     }
 }
+

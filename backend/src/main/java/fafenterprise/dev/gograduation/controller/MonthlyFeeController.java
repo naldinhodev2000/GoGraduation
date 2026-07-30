@@ -41,7 +41,7 @@ public class MonthlyFeeController {
 
         return ResponseEntity.ok().build();
     }
-
+    
     @GetMapping("/group/{groupId}")
     public ResponseEntity<List<MonthlyFeeDTO>> getAllByGroupId(
             @PathVariable UUID groupId) {
