@@ -29,20 +29,18 @@ public class SubscriptionController {
     public SubscriptionEntity subscribe(
             @RequestBody SubscriptionDTO subscriptionDTO) {
 
-        return subscriptionService.subscribe(subscriptionDTO);
-    }
-
-    @GetMapping
-    public List<SubscriptionEntity> listAll() {
-
-        return subscriptionService.listAll();
+        return subscriptionService.subscribe(
+                subscriptionDTO
+        );
     }
 
     @GetMapping("/group/{groupId}")
     public List<SubscriptionEntity> listByGroup(
             @PathVariable UUID groupId) {
 
-        return subscriptionService.listByGroup(groupId);
+        return subscriptionService.listByGroup(
+                groupId
+        );
     }
 
     @PutMapping("/{subscriptionId}/status")
@@ -56,4 +54,3 @@ public class SubscriptionController {
         );
     }
 }
-

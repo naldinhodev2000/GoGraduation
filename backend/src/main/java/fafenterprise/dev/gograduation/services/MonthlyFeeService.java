@@ -1,9 +1,11 @@
+
 package fafenterprise.dev.gograduation.services;
 
 import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import fafenterprise.dev.gograduation.dto.MonthlyFeeDTO;
 import fafenterprise.dev.gograduation.entity.uno.GroupEntity;
@@ -15,26 +17,38 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class MonthlyFeeService {
-    final GroupRepository groupRepository;
-    final GroupUserRepository groupUserRepository;
-    final MonthlyFeeRepository monthlyFeeRepository;
-    final JwtService jwtService;
-    final GroupUserService groupUserService;
+
+    private final GroupRepository groupRepository;
+    private final GroupUserRepository groupUserRepository;
+    private final MonthlyFeeRepository monthlyFeeRepository;
+    private final JwtService jwtService;
+    private final GroupUserService groupUserService;
 
     public void create(MonthlyFeeDTO monthlyFeeDTO) {
-        
 
-        if(!groupUserService.isUserInGroup(monthlyFeeDTO.groupId())){
-            throw new RuntimeException("User is not a member of the group");
+        UUID groupId = monthlyFeeDTO.groupId();
+
+        // Usuário precisa ser membro da sala
+        if (!groupUserService.isUserInGroup(groupId)) {
+            throw new RuntimeException(
+                    "User is not a member of the group");
         }
-        if(!groupUserService.isUserAdmin(monthlyFeeDTO.groupId())) {
-            throw new RuntimeException("User is not an admin of the group");
+
+        // Somente administrador pode criar mensalidade
+        if (!groupUserService.isUserAdmin(groupId)) {
+            throw new RuntimeException(
+                    "Only admins can create monthly fees");
         }
 
+        GroupEntity group = groupRepository
+                .findById(groupId)
+                .orElseThrow(() ->
+                        new RuntimeException("Group not found"));
 
-        MonthlyFeeEntity monthlyFee = new MonthlyFeeEntity();
-        GroupEntity group = groupRepository.findById(monthlyFeeDTO.groupId()).orElseThrow();
+        MonthlyFeeEntity monthlyFee =
+                new MonthlyFeeEntity();
 
         monthlyFee.setValue(monthlyFeeDTO.value());
         monthlyFee.setStartDate(monthlyFeeDTO.startDate());
@@ -42,56 +56,108 @@ public class MonthlyFeeService {
         monthlyFee.setGroup(group);
 
         monthlyFeeRepository.save(monthlyFee);
-
     }
 
-    public void update(UUID id, MonthlyFeeDTO monthlyFeeDTO) {
+    public void update(
+            UUID id,
+            MonthlyFeeDTO monthlyFeeDTO) {
 
-        
-        if(!groupUserService.isUserInGroup(monthlyFeeDTO.groupId())){
-            throw new RuntimeException("User is not a member of the group");
+        MonthlyFeeEntity monthlyFee =
+                monthlyFeeRepository
+                        .findById(id)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Monthly fee not found"));
+
+        // A mensalidade pertence a esta sala
+        UUID currentGroupId =
+                monthlyFee.getGroup().getId();
+
+        // Usuário precisa ser membro da sala atual
+        if (!groupUserService.isUserInGroup(
+                currentGroupId)) {
+
+            throw new RuntimeException(
+                    "User is not a member of the group");
         }
-        if(!groupUserService.isUserAdmin(monthlyFeeDTO.groupId())) {
-            throw new RuntimeException("User is not an admin of the group");
+
+        // Somente admin pode alterar
+        if (!groupUserService.isUserAdmin(
+                currentGroupId)) {
+
+            throw new RuntimeException(
+                    "Only admins can update monthly fees");
         }
 
-        MonthlyFeeEntity monthlyFee = monthlyFeeRepository.findById(id).orElseThrow();
-        GroupEntity group = groupRepository.findById(monthlyFeeDTO.groupId()).orElseThrow();
+        // Impede mover a mensalidade para outra sala
+        // sem autorização da nova sala
+        UUID newGroupId =
+                monthlyFeeDTO.groupId();
 
-        monthlyFee.setValue(monthlyFeeDTO.value());
-        monthlyFee.setStartDate(monthlyFeeDTO.startDate());
-        monthlyFee.setEndDate(monthlyFeeDTO.endDate());
+        if (!currentGroupId.equals(newGroupId)) {
+
+            if (!groupUserService.isUserInGroup(
+                    newGroupId)) {
+
+                throw new RuntimeException(
+                        "User is not a member of the new group");
+            }
+
+            if (!groupUserService.isUserAdmin(
+                    newGroupId)) {
+
+                throw new RuntimeException(
+                        "User is not an admin of the new group");
+            }
+        }
+
+        GroupEntity group =
+                groupRepository
+                        .findById(newGroupId)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Group not found"));
+
+        monthlyFee.setValue(
+                monthlyFeeDTO.value());
+
+        monthlyFee.setStartDate(
+                monthlyFeeDTO.startDate());
+
+        monthlyFee.setEndDate(
+                monthlyFeeDTO.endDate());
+
         monthlyFee.setGroup(group);
 
         monthlyFeeRepository.save(monthlyFee);
-
     }
 
+    public List<MonthlyFeeDTO> getAllByGroupId(
+            UUID groupId) {
 
-    public List<MonthlyFeeDTO> getAllByGroupId(UUID groupId) {
-        
-        if(!groupUserService.isUserInGroup(groupId)){
-            throw new RuntimeException("User is not a member of the group");
-        }
-        if(!groupUserService.isUserAdmin(groupId)) {
-            throw new RuntimeException("User is not an admin of the group");
+        // Qualquer membro ativo pode visualizar
+        // as mensalidades da sua sala
+        if (!groupUserService.isUserInGroup(
+                groupId)) {
+
+            throw new RuntimeException(
+                    "User is not a member of the group");
         }
 
-        List<MonthlyFeeEntity> monthlyFees = monthlyFeeRepository.findByGroup_Id(groupId);
-        return monthlyFees.stream()
-                .map(monthlyFee -> {
-                    return new MonthlyFeeDTO(
-                            monthlyFee.getId(),
-                            monthlyFee.getValue(),
-                            monthlyFee.getGroup().getId(),
-                            monthlyFee.getStartDate(),
-                            monthlyFee.getEndDate()
-                        
-                    );
-                })
-                .toList(); 
+        List<MonthlyFeeEntity> monthlyFees =
+                monthlyFeeRepository
+                        .findByGroup_Id(groupId);
+
+        return monthlyFees
+                .stream()
+                .map(monthlyFee ->
+                        new MonthlyFeeDTO(
+                                monthlyFee.getId(),
+                                monthlyFee.getValue(),
+                                monthlyFee.getGroup().getId(),
+                                monthlyFee.getStartDate(),
+                                monthlyFee.getEndDate()
+                        ))
+                .toList();
     }
-
-    
-
 }

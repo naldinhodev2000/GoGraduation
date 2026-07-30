@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface GroupRepository extends JpaRepository<GroupEntity, UUID> {
+    Optional<GroupEntity> findByCashId(UUID cashId);
 
     Optional<GroupEntity> findByToken(String groupId);
 }

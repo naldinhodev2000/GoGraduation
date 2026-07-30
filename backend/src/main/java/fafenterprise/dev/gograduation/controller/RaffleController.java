@@ -32,11 +32,6 @@ public class RaffleController {
         return raffleService.create(raffleRequestDTO);
     }
 
-    @GetMapping
-    public List<RaffleResponseDTO> listAll() {
-        return raffleService.listAll();
-    }
-
     @GetMapping("/group/{groupId}")
     public List<RaffleResponseDTO> listByGroup(
             @PathVariable UUID groupId) {
@@ -49,13 +44,16 @@ public class RaffleController {
             @PathVariable UUID id,
             @RequestBody RaffleRequestDTO raffleRequestDTO) {
 
-        return raffleService.update(id, raffleRequestDTO);
+        return raffleService.update(
+                id,
+                raffleRequestDTO
+        );
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable UUID id) {
+    public void delete(
+            @PathVariable UUID id) {
+
         raffleService.delete(id);
     }
-
 }
-

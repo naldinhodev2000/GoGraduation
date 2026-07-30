@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import fafenterprise.dev.gograduation.dto.SubscriptionDTO;
 import fafenterprise.dev.gograduation.entity.relationship.SubscriptionEntity;
@@ -19,51 +20,142 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class SubscriptionService {
 
     private final MonthlyFeeRepository monthlyFeeRepository;
     private final UserRepository userRepository;
     private final SubscriptionRepository subscriptionRepository;
+    private final GroupUserService groupUserService;
 
-    public SubscriptionEntity subscribe(SubscriptionDTO subscriptionDTO) {
+    /*
+     * Inscreve um usuário em uma mensalidade.
+     *
+     * Somente ADMIN da sala pode realizar essa operação.
+     */
+    public SubscriptionEntity subscribe(
+            SubscriptionDTO subscriptionDTO) {
 
-        MonthlyFeeEntity monthlyFee = monthlyFeeRepository
-                .findById(subscriptionDTO.monthlyFeeId())
-                .orElseThrow();
+        MonthlyFeeEntity monthlyFee =
+                monthlyFeeRepository
+                        .findById(subscriptionDTO.monthlyFeeId())
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Monthly fee not found"));
 
-        UserEntity user = userRepository
-                .findById(subscriptionDTO.userId())
-                .orElseThrow();
+        UUID groupId =
+                monthlyFee
+                        .getGroup()
+                        .getId();
 
-        SubscriptionEntity subscription = new SubscriptionEntity();
+        // O usuário logado precisa pertencer à sala
+        validateMember(groupId);
+
+        // Somente ADMIN pode cadastrar assinaturas
+        validateAdmin(groupId);
+
+        UserEntity user =
+                userRepository
+                        .findById(subscriptionDTO.userId())
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "User not found"));
+
+        // O usuário que será inscrito
+        // também precisa pertencer à sala
+        if (!groupUserService.isUserInGroup(
+                groupId,
+                user.getId())) {
+
+            throw new RuntimeException(
+                    "User is not a member of this group");
+        }
+
+        SubscriptionEntity subscription =
+                new SubscriptionEntity();
 
         subscription.setMonthlyFee(monthlyFee);
         subscription.setUser(user);
-        subscription.setSubscriptionDate(LocalDateTime.now());
-        subscription.setStatus(SubscriptionStatus.ACTIVE);
+        subscription.setSubscriptionDate(
+                LocalDateTime.now());
 
-        return subscriptionRepository.save(subscription);
+        subscription.setStatus(
+                SubscriptionStatus.ACTIVE);
+
+        return subscriptionRepository.save(
+                subscription);
     }
 
+    /*
+     * Altera o status de uma assinatura.
+     *
+     * Somente ADMIN da sala pode alterar.
+     */
     public void changeStatus(
             UUID subscriptionId,
             SubscriptionStatus status) {
 
-        SubscriptionEntity subscriptionEntity = subscriptionRepository
-                .findById(subscriptionId)
-                .orElseThrow();
+        SubscriptionEntity subscription =
+                subscriptionRepository
+                        .findById(subscriptionId)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Subscription not found"));
 
-        subscriptionEntity.setStatus(status);
+        UUID groupId =
+                subscription
+                        .getMonthlyFee()
+                        .getGroup()
+                        .getId();
 
-        subscriptionRepository.save(subscriptionEntity);
+        validateMember(groupId);
+        validateAdmin(groupId);
+
+        subscription.setStatus(status);
+
+        subscriptionRepository.save(
+                subscription);
     }
 
-    public List<SubscriptionEntity> listAll() {
-        return subscriptionRepository.findAll();
-    }
+    /*
+     * Lista as assinaturas de uma sala.
+     *
+     * Somente membros ativos da sala podem visualizar.
+     */
+    public List<SubscriptionEntity> listByGroup(
+            UUID groupId) {
 
-    public List<SubscriptionEntity> listByGroup(UUID groupId) {
+        validateMember(groupId);
+
         return subscriptionRepository
                 .findByMonthlyFeeGroupId(groupId);
+    }
+
+    /*
+     * Verifica se o usuário logado pertence à sala.
+     */
+    private void validateMember(
+            UUID groupId) {
+
+        if (!groupUserService.isUserInGroup(
+                groupId)) {
+
+            throw new RuntimeException(
+                    "User is not a member of the group");
+        }
+    }
+
+    /*
+     * Verifica se o usuário logado é ADMIN da sala.
+     */
+    private void validateAdmin(
+            UUID groupId) {
+
+        if (!groupUserService.isUserAdmin(
+                groupId)) {
+
+            throw new RuntimeException(
+                    "Only admins can perform this action");
+        }
     }
 }
