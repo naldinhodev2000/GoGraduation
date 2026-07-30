@@ -9,6 +9,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,6 +23,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Cash {
+
     @Id
     @GeneratedValue
     private UUID id;
@@ -29,10 +31,9 @@ public class Cash {
     @Column
     private BigDecimal value;
 
-   
-    @OneToMany (mappedBy = "cashRegister")
+    @OneToMany(mappedBy = "cashRegister")
     private List<TransactionEntity> transactions;
 
-    
-
+    @OneToOne(mappedBy = "cash")
+    private GroupEntity group;
 }

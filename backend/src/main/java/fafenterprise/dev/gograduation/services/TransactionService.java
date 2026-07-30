@@ -7,12 +7,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import fafenterprise.dev.gograduation.dto.request.TransactionDTO;
+import fafenterprise.dev.gograduation.entity.relationship.SubscriptionPaymentEntity;
 import fafenterprise.dev.gograduation.entity.uno.Cash;
 import fafenterprise.dev.gograduation.entity.uno.GroupEntity;
+import fafenterprise.dev.gograduation.entity.uno.RaffleEntity;
 import fafenterprise.dev.gograduation.entity.uno.TransactionEntity;
 import fafenterprise.dev.gograduation.entity.uno.UserEntity;
 import fafenterprise.dev.gograduation.enums.TransactionType;
 import fafenterprise.dev.gograduation.repository.GroupRepository;
+import fafenterprise.dev.gograduation.repository.RaffleRepository;
+import fafenterprise.dev.gograduation.repository.SubscriptionPaymentRepository;
 import fafenterprise.dev.gograduation.repository.TransactionRepository;
 import fafenterprise.dev.gograduation.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,16 +29,22 @@ public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final GroupRepository groupRepository;
     private final UserRepository userRepository;
+    private final RaffleRepository raffleRepository;
+    private final SubscriptionPaymentRepository subscriptionPaymentRepository;
     private final CashService cashService;
     private final GroupUserService groupUserService;
+    private final JwtService jwtService;
 
     public TransactionDTO addTransaction(
             TransactionDTO transactionDTO) {
 
         UUID groupId = transactionDTO.groupId();
 
-        // Verifica se o usuário logado pertence à sala
+        // Usuário precisa ser membro da comunidade
         groupUserService.validateUserInGroup(groupId);
+
+        // Somente ADMIN pode lançar movimentações
+        groupUserService.validateAdmin(groupId);
 
         GroupEntity group = groupRepository
                 .findById(groupId)
@@ -44,20 +54,19 @@ public class TransactionService {
 
         Cash cash = group.getCash();
 
+        if (cash == null) {
+            throw new RuntimeException(
+                    "Caixa da comunidade não encontrado");
+        }
+
+        // Usuário logado através do JWT
+        UUID loggedUserId = jwtService.getLoggedId();
+
         UserEntity user = userRepository
-                .findById(transactionDTO.userId())
+                .findById(loggedUserId)
                 .orElseThrow(() ->
                         new RuntimeException(
                                 "Usuário não encontrado"));
-
-        // Verifica se o usuário da transação pertence à sala
-        if (!groupUserService.isUserInGroup(
-                groupId,
-                user.getId())) {
-
-            throw new RuntimeException(
-                    "Usuário não pertence a esta sala");
-        }
 
         TransactionEntity transaction =
                 new TransactionEntity();
@@ -73,13 +82,73 @@ public class TransactionService {
 
         transaction.setType(
                 TransactionType.valueOf(
-                        transactionDTO.type()));
+                        transactionDTO.type()
+                                .toUpperCase()));
 
         transaction.setCashRegister(cash);
+
         transaction.setUser(user);
+
+        /*
+         * Vincula a movimentação a uma RIFA.
+         */
+        if (transactionDTO.raffleId() != null) {
+
+            RaffleEntity raffle =
+                    raffleRepository
+                            .findById(
+                                    transactionDTO.raffleId())
+                            .orElseThrow(() ->
+                                    new RuntimeException(
+                                            "Rifa não encontrada"));
+
+            if (!raffle.getGroup()
+                    .getId()
+                    .equals(groupId)) {
+
+                throw new RuntimeException(
+                        "A rifa não pertence a esta comunidade");
+            }
+
+            transaction.setRaffle(raffle);
+        }
+
+        /*
+         * Vincula a movimentação a um
+         * pagamento de mensalidade.
+         */
+        if (transactionDTO.subscriptionPaymentId()
+                != null) {
+
+            SubscriptionPaymentEntity payment =
+                    subscriptionPaymentRepository
+                            .findById(
+                                    transactionDTO
+                                            .subscriptionPaymentId())
+                            .orElseThrow(() ->
+                                    new RuntimeException(
+                                            "Pagamento não encontrado"));
+
+            UUID paymentGroupId =
+                    payment
+                            .getSubscription()
+                            .getMonthlyFee()
+                            .getGroup()
+                            .getId();
+
+            if (!paymentGroupId.equals(groupId)) {
+
+                throw new RuntimeException(
+                        "O pagamento não pertence a esta comunidade");
+            }
+
+            transaction.setSubscriptionPayment(
+                    payment);
+        }
 
         transactionRepository.save(transaction);
 
+        // Recalcula o saldo do caixa
         cashService.updateCash(groupId);
 
         return transactionDTO;
@@ -94,28 +163,26 @@ public class TransactionService {
                                 new RuntimeException(
                                         "Transação não encontrada"));
 
-        UUID cashId = transaction
-                .getCashRegister()
+        Cash cash = transaction.getCashRegister();
+
+        if (cash == null || cash.getGroup() == null) {
+            throw new RuntimeException(
+                    "Não foi possível identificar a comunidade");
+        }
+
+        UUID groupId = cash
+                .getGroup()
                 .getId();
 
-        // Descobre a sala através do caixa
-        GroupEntity group = groupRepository
-                .findByCashId(cashId)
-                .orElseThrow(() ->
-                        new RuntimeException(
-                                "Grupo não encontrado"));
-
-        UUID groupId = group.getId();
-
-        // Usuário logado precisa ser membro da sala
+        // Usuário precisa pertencer à comunidade
         groupUserService.validateUserInGroup(groupId);
 
-        // Somente admin pode excluir
+        // Somente ADMIN pode excluir
         groupUserService.validateAdmin(groupId);
 
         transactionRepository.delete(transaction);
 
-        // Recalcula o saldo após excluir
+        // Atualiza o saldo após excluir
         cashService.updateCash(groupId);
     }
 }

@@ -26,23 +26,30 @@ public class CashController {
     private final CashService cashService;
 
     @GetMapping("/{groupId}/goal")
-    public RemainingToGoalDTO getRemainingToGoal(@PathVariable UUID groupId) {
-    return cashService.getRemainingToGoal(groupId);
-}
-    @GetMapping("/{groupId}")
-    public CashResponseDTO getCash(@PathVariable UUID groupId) {
-        return cashService.getCash(groupId);
+    public RemainingToGoalDTO getRemainingToGoal(
+            @PathVariable UUID groupId) {
+
+        return cashService
+                .getRemainingToGoal(groupId);
     }
 
+    @GetMapping("/{groupId}")
+    public CashResponseDTO getCash(
+            @PathVariable UUID groupId) {
+
+        return cashService
+                .getCash(groupId);
+    }
 
     @PostMapping
     public TransactionDTO addTransaction(
             @RequestBody TransactionDTO transaction) {
 
-        return transactionService.addTransaction(transaction);
+        return transactionService
+                .addTransaction(transaction);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/transactions/{id}")
     public void deleteTransaction(
             @PathVariable UUID id) {
 

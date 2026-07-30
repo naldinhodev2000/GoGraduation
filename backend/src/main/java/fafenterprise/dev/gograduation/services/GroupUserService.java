@@ -41,16 +41,13 @@ public class GroupUserService {
 
         GroupEntity group = groupRepo
                 .findById(groupId)
-                .orElseThrow(() ->
-                        new RuntimeException("Group not found"));
+                .orElseThrow(() -> new RuntimeException("Group not found"));
 
         UserEntity user = userRepo
                 .findById(loggedUserId)
-                .orElseThrow(() ->
-                        new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        GroupUserEntity groupUser =
-                new GroupUserEntity();
+        GroupUserEntity groupUser = new GroupUserEntity();
 
         groupUser.setUser(user);
         groupUser.setGroup(group);
@@ -69,8 +66,7 @@ public class GroupUserService {
     public void addUser(
             GroupUserDTO groupUserDTO) {
 
-        UUID groupId =
-                groupUserDTO.idGroup();
+        UUID groupId = groupUserDTO.idGroup();
 
         // Verifica se o usuário logado pertence à sala
         if (!isUserInGroup(groupId)) {
@@ -86,26 +82,22 @@ public class GroupUserService {
 
         GroupEntity group = groupRepo
                 .findById(groupId)
-                .orElseThrow(() ->
-                        new RuntimeException(
-                                "Group not found"));
+                .orElseThrow(() -> new RuntimeException(
+                        "Group not found"));
 
         UserEntity user = userRepo
                 .findById(groupUserDTO.idUser())
-                .orElseThrow(() ->
-                        new RuntimeException(
-                                "User not found"));
+                .orElseThrow(() -> new RuntimeException(
+                        "User not found"));
 
-        GroupUserEntity existing =
-                groupUserRepo
-                        .findByUser_IdAndGroup_Id(
-                                user.getId(),
-                                group.getId())
-                        .orElse(null);
+        GroupUserEntity existing = groupUserRepo
+                .findByUser_IdAndGroup_Id(
+                        user.getId(),
+                        group.getId())
+                .orElse(null);
 
         if (existing != null &&
-                existing.getStatus() ==
-                        GroupUserStatus.ACTIVE) {
+                existing.getStatus() == GroupUserStatus.ACTIVE) {
 
             throw new RuntimeException(
                     "User already in group");
@@ -114,8 +106,7 @@ public class GroupUserService {
         // Se o usuário já esteve na sala e foi removido,
         // apenas reativa o vínculo.
         if (existing != null &&
-                existing.getStatus() ==
-                        GroupUserStatus.REMOVED) {
+                existing.getStatus() == GroupUserStatus.REMOVED) {
 
             existing.setStatus(
                     GroupUserStatus.ACTIVE);
@@ -129,8 +120,7 @@ public class GroupUserService {
             return;
         }
 
-        GroupUserEntity groupUser =
-                new GroupUserEntity();
+        GroupUserEntity groupUser = new GroupUserEntity();
 
         groupUser.setUser(user);
         groupUser.setGroup(group);
@@ -151,50 +141,41 @@ public class GroupUserService {
             UUID groupId,
             UUID userIdToRemove) {
 
-        UUID loggedUserId =
-                jwtService.getLoggedId();
+        UUID loggedUserId = jwtService.getLoggedId();
 
-        GroupUserEntity adminMembership =
-                groupUserRepo
-                        .findByUser_IdAndGroup_Id(
-                                loggedUserId,
-                                groupId)
-                        .orElseThrow(() ->
-                                new RuntimeException(
-                                        "User is not in this group"));
+        GroupUserEntity adminMembership = groupUserRepo
+                .findByUser_IdAndGroup_Id(
+                        loggedUserId,
+                        groupId)
+                .orElseThrow(() -> new RuntimeException(
+                        "User is not in this group"));
 
-        if (adminMembership.getStatus() !=
-                GroupUserStatus.ACTIVE) {
+        if (adminMembership.getStatus() != GroupUserStatus.ACTIVE) {
 
             throw new RuntimeException(
                     "User is not active in this group");
         }
 
-        if (adminMembership.getRole() !=
-                Role.ADMIN) {
+        if (adminMembership.getRole() != Role.ADMIN) {
 
             throw new RuntimeException(
                     "Only admins can remove users from the group");
         }
 
-        GroupUserEntity targetMembership =
-                groupUserRepo
-                        .findByUser_IdAndGroup_Id(
-                                userIdToRemove,
-                                groupId)
-                        .orElseThrow(() ->
-                                new RuntimeException(
-                                        "Target user is not in this group"));
+        GroupUserEntity targetMembership = groupUserRepo
+                .findByUser_IdAndGroup_Id(
+                        userIdToRemove,
+                        groupId)
+                .orElseThrow(() -> new RuntimeException(
+                        "Target user is not in this group"));
 
-        if (targetMembership.getStatus() !=
-                GroupUserStatus.ACTIVE) {
+        if (targetMembership.getStatus() != GroupUserStatus.ACTIVE) {
 
             throw new RuntimeException(
                     "Target user is not active in this group");
         }
 
-        if (targetMembership.getRole() ==
-                Role.ADMIN) {
+        if (targetMembership.getRole() == Role.ADMIN) {
 
             throw new RuntimeException(
                     "Cannot remove another admin");
@@ -212,34 +193,27 @@ public class GroupUserService {
     public void joinGroup(
             String groupToken) {
 
-        UUID userId =
-                jwtService.getLoggedId();
+        UUID userId = jwtService.getLoggedId();
 
-        GroupEntity group =
-                groupRepo
-                        .findByToken(groupToken)
-                        .orElseThrow(() ->
-                                new RuntimeException(
-                                        "Group not found"));
+        GroupEntity group = groupRepo
+                .findByToken(groupToken)
+                .orElseThrow(() -> new RuntimeException(
+                        "Group not found"));
 
-        UserEntity user =
-                userRepo
-                        .findById(userId)
-                        .orElseThrow(() ->
-                                new RuntimeException(
-                                        "User not found"));
+        UserEntity user = userRepo
+                .findById(userId)
+                .orElseThrow(() -> new RuntimeException(
+                        "User not found"));
 
-        GroupUserEntity existing =
-                groupUserRepo
-                        .findByUser_IdAndGroup_Id(
-                                userId,
-                                group.getId())
-                        .orElse(null);
+        GroupUserEntity existing = groupUserRepo
+                .findByUser_IdAndGroup_Id(
+                        userId,
+                        group.getId())
+                .orElse(null);
 
         if (existing == null) {
 
-            GroupUserEntity groupUser =
-                    new GroupUserEntity();
+            GroupUserEntity groupUser = new GroupUserEntity();
 
             groupUser.setUser(user);
             groupUser.setGroup(group);
@@ -253,8 +227,7 @@ public class GroupUserService {
             return;
         }
 
-        if (existing.getStatus() ==
-                GroupUserStatus.REMOVED) {
+        if (existing.getStatus() == GroupUserStatus.REMOVED) {
 
             existing.setStatus(
                     GroupUserStatus.ACTIVE);
@@ -276,21 +249,18 @@ public class GroupUserService {
      */
     public List<GroupResponseDTO> getJoinedGroups() {
 
-        UUID userId =
-                jwtService.getLoggedId();
+        UUID userId = jwtService.getLoggedId();
 
-        List<GroupUserEntity> groups =
-                groupUserRepo
-                        .findByUserIdAndStatus(
-                                userId,
-                                GroupUserStatus.ACTIVE);
+        List<GroupUserEntity> groups = groupUserRepo
+                .findByUserIdAndStatus(
+                        userId,
+                        GroupUserStatus.ACTIVE);
 
         return groups
                 .stream()
                 .map(groupUser -> {
 
-                    GroupEntity group =
-                            groupUser.getGroup();
+                    GroupEntity group = groupUser.getGroup();
 
                     return new GroupResponseDTO(
                             group.getId(),
@@ -315,19 +285,15 @@ public class GroupUserService {
                     "User is not a member of the group");
         }
 
-        List<GroupUserEntity> groupUsers =
-                groupUserRepo
-                        .findByGroup_Id(groupId);
+        List<GroupUserEntity> groupUsers = groupUserRepo
+                .findByGroup_Id(groupId);
 
         return groupUsers
                 .stream()
-                .filter(groupUser ->
-                        groupUser.getStatus() ==
-                                GroupUserStatus.ACTIVE)
+                .filter(groupUser -> groupUser.getStatus() == GroupUserStatus.ACTIVE)
                 .map(groupUser -> {
 
-                    UserEntity user =
-                            groupUser.getUser();
+                    UserEntity user = groupUser.getUser();
 
                     return new UserResponseDTO(
                             user.getId(),
@@ -345,8 +311,7 @@ public class GroupUserService {
     public boolean isUserInGroup(
             UUID groupId) {
 
-        UUID userId =
-                jwtService.getLoggedId();
+        UUID userId = jwtService.getLoggedId();
 
         return isUserInGroup(
                 groupId,
@@ -379,51 +344,46 @@ public class GroupUserService {
     public boolean isUserAdmin(
             UUID groupId) {
 
-        UUID userId =
-                jwtService.getLoggedId();
+        UUID userId = jwtService.getLoggedId();
 
-        GroupUserEntity groupUser =
-                groupUserRepo
-                        .findByUser_IdAndGroup_Id(
-                                userId,
-                                groupId)
-                        .orElseThrow(() ->
-                                new RuntimeException(
-                                        "User is not a member of the group"));
+        GroupUserEntity groupUser = groupUserRepo
+                .findByUser_IdAndGroup_Id(
+                        userId,
+                        groupId)
+                .orElseThrow(() -> new RuntimeException(
+                        "User is not a member of the group"));
 
-        if (groupUser.getStatus() !=
-                GroupUserStatus.ACTIVE) {
+        if (groupUser.getStatus() != GroupUserStatus.ACTIVE) {
 
             throw new RuntimeException(
                     "User is not active in this group");
         }
 
-        return groupUser.getRole() ==
-                Role.ADMIN;
+        return groupUser.getRole() == Role.ADMIN;
     }
 
     public void validateUserInGroup(UUID groupId) {
-    UUID userId = jwtService.getLoggedId();
+        UUID userId = jwtService.getLoggedId();
 
-    boolean isMember = groupUserRepo
-            .existsByUser_IdAndGroup_IdAndStatus(
-                    userId,
-                    groupId,
-                    GroupUserStatus.ACTIVE
-            );
+        boolean isMember = groupUserRepo
+                .existsByUser_IdAndGroup_IdAndStatus(
+                        userId,
+                        groupId,
+                        GroupUserStatus.ACTIVE);
 
-    if (!isMember) {
-        throw new RuntimeException(
-                "User is not a member of this group"
-        );
+        if (!isMember) {
+            throw new RuntimeException(
+                    "User is not a member of this group");
+        }
     }
-}
 
-public void validateAdmin(UUID groupId) {
-    if (!isUserAdmin(groupId)) {
-        throw new RuntimeException(
-                "Only admins can perform this action"
-        );
+    public void validateAdmin(UUID groupId) {
+
+        validateUserInGroup(groupId);
+
+        if (!isUserAdmin(groupId)) {
+            throw new RuntimeException(
+                    "Only admins can perform this action");
+        }
     }
-}
 }
