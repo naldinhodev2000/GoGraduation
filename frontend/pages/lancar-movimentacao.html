@@ -2,25 +2,34 @@
 <html lang="pt-br">
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Bora Formar - Lançar Movimentação</title>
         <link rel="stylesheet" href="../css/lancar-movimentacao.css">
     </head>
     <body>
         <header id="header-content">
-            <button id="menu-toggle" aria-label="Menu">☰</button>
+            <a id="back-link" href="#">‹ Voltar</a>
             <h1>Lançar Movimentação</h1>
         </header>
         <main id="main-content">
             <form id="form-movimentacao">
                 <label>Tipo:</label>
-                <select id="type" class="form-item" required>
-                    <option value="ENTRADA">Entrada</option>
-                    <option value="SAIDA">Saída</option>
-                </select>
+                <div class="type-toggle">
+                    <button type="button" class="type-option selected" data-type="ENTRADA">Entrada</button>
+                    <button type="button" class="type-option" data-type="SAIDA">Saída</button>
+                </div>
+                <input type="hidden" id="type" value="ENTRADA">
+
                 <label>Valor:</label>
                 <input id="value" class="form-item" type="number" step="0.01" required>
+
                 <label>Descrição:</label>
-                <input id="description" class="form-item" type="text" required>
+                <input id="description" class="form-item" type="text" placeholder="Ex: venda de rifa, compra de material..." required>
+
+                <label>Vincular a uma rifa (opcional):</label>
+                <select id="raffle" class="form-item">
+                    <option value="">Nenhuma</option>
+                </select>
 
                 <p id="form-error" class="hidden"></p>
 
@@ -30,35 +39,70 @@
 
         <script type="module">
             import cashService from "../js/services/cashService.js";
-            import { getCurrentUserId } from "../js/jwtUtils.js";
+            import raffleService from "../js/services/raffleService.js";
 
             const params = new URLSearchParams(window.location.search);
             const groupId = params.get("id");
 
             const form = document.getElementById("form-movimentacao");
             const errorMessage = document.getElementById("form-error");
+            const typeInput = document.getElementById("type");
+            const raffleSelect = document.getElementById("raffle");
+            const typeButtons = document.querySelectorAll(".type-option");
 
             if (!groupId) {
-                document.getElementById("back-link").href = `sala.html?id=${groupId}`;
+                window.location.href = "salas.html";
+            }
+            document.getElementById("back-link").href = `sala.html?id=${groupId}`;
+
+            typeButtons.forEach((button) => {
+                button.addEventListener("click", () => {
+                    typeButtons.forEach((b) => b.classList.remove("selected"));
+                    button.classList.add("selected");
+                    typeInput.value = button.dataset.type;
+                });
+            });
+
+            async function loadRaffles() {
+                try {
+                    const raffles = await raffleService.listByGroup(groupId);
+                    raffles.forEach((raffle) => {
+                        const option = document.createElement("option");
+                        option.value = raffle.id;
+                        option.textContent = raffle.name;
+                        raffleSelect.appendChild(option);
+                    });
+                } catch (error) {
+                    // Se não conseguir carregar rifas, o campo fica só com "Nenhuma".
+                }
             }
 
             form.addEventListener("submit", async (event) => {
                 event.preventDefault();
                 errorMessage.classList.add("hidden");
 
-                const type = document.getElementById("type").value;
+                const type = typeInput.value;
                 const value = document.getElementById("value").value;
                 const description = document.getElementById("description").value;
-                const userId = getCurrentUserId();
+                const raffleId = raffleSelect.value || null;
 
                 try {
-                    await cashService.addTransaction({ value, description, type, groupId, userId });
+                    await cashService.addTransaction({
+                        value,
+                        description,
+                        type,
+                        groupId,
+                        raffleId,
+                        subscriptionPaymentId: null
+                    });
                     window.location.href = `sala.html?id=${groupId}`;
                 } catch (error) {
                     errorMessage.textContent = error.message || "Não foi possível lançar a movimentação.";
                     errorMessage.classList.remove("hidden");
                 }
             });
+
+            loadRaffles();
         </script>
     </body>
 </html>

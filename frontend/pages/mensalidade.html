@@ -2,27 +2,37 @@
 <html lang="pt-br">
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Bora Formar - Mensalidade</title>
         <link rel="stylesheet" href="../css/mensalidade.css">
     </head>
     <body>
         <header id="header-content">
-            <button id="menu-toggle" aria-label="Menu">☰</button>
+            <a id="back-link" href="#">‹ Voltar</a>
             <h1>Mensalidade</h1>
         </header>
         <main id="main-content">
-            <form id="form-mensalidade">
-                <label>Valor:</label>
-                <input id="value" class="form-item" type="number" step="0.01" required>
-                <label>Início:</label>
-                <input id="start-date" class="form-item" type="date" required>
-                <label>Fim:</label>
-                <input id="end-date" class="form-item" type="date" required>
+            <section id="current-fee-section">
+                <h2>Mensalidades cadastradas</h2>
+                <ul id="fee-list"></ul>
+                <p id="fee-empty" class="hidden">Nenhuma mensalidade cadastrada ainda.</p>
+            </section>
 
-                <p id="form-error" class="hidden"></p>
+            <section id="new-fee-section">
+                <h2>Nova mensalidade</h2>
+                <form id="form-mensalidade">
+                    <label>Valor:</label>
+                    <input id="value" class="form-item" type="number" step="0.01" required>
+                    <label>Início:</label>
+                    <input id="start-date" class="form-item" type="date" required>
+                    <label>Fim (opcional):</label>
+                    <input id="end-date" class="form-item" type="date">
 
-                <input id="button-criar" type="submit" value="Criar">
-            </form>
+                    <p id="form-error" class="hidden"></p>
+
+                    <input id="button-criar" type="submit" value="Criar">
+                </form>
+            </section>
         </main>
 
         <script type="module">
@@ -33,9 +43,44 @@
 
             const form = document.getElementById("form-mensalidade");
             const errorMessage = document.getElementById("form-error");
+            const feeList = document.getElementById("fee-list");
+            const feeEmpty = document.getElementById("fee-empty");
 
             if (!groupId) {
-                document.getElementById("back-link").href = `sala.html?id=${groupId}`;
+                window.location.href = "salas.html";
+            }
+            document.getElementById("back-link").href = `sala.html?id=${groupId}`;
+
+            function formatDate(dateStr) {
+                if (!dateStr) {
+                    return "sem data final";
+                }
+                const [year, month, day] = dateStr.split("-");
+                return `${day}/${month}/${year}`;
+            }
+
+            async function loadFees() {
+                try {
+                    const fees = await monthlyFeeService.listByGroupId(groupId);
+
+                    if (!fees || fees.length === 0) {
+                        feeEmpty.classList.remove("hidden");
+                        return;
+                    }
+
+                    fees.forEach((fee) => {
+                        const item = document.createElement("li");
+                        item.className = "fee-card";
+                        item.innerHTML = `
+                            <div class="fee-value">R$ ${Number(fee.value).toFixed(2)}</div>
+                            <div class="fee-period">${formatDate(fee.startDate)} até ${formatDate(fee.endDate)}</div>
+                        `;
+                        feeList.appendChild(item);
+                    });
+                } catch (error) {
+                    feeEmpty.textContent = error.message || "Não foi possível carregar as mensalidades.";
+                    feeEmpty.classList.remove("hidden");
+                }
             }
 
             form.addEventListener("submit", async (event) => {
@@ -44,7 +89,7 @@
 
                 const value = document.getElementById("value").value;
                 const startDate = document.getElementById("start-date").value;
-                const endDate = document.getElementById("end-date").value;
+                const endDate = document.getElementById("end-date").value || null;
 
                 try {
                     await monthlyFeeService.create({ groupId, value, startDate, endDate });
@@ -54,6 +99,8 @@
                     errorMessage.classList.remove("hidden");
                 }
             });
+
+            loadFees();
         </script>
     </body>
 </html>

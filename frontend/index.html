@@ -2,20 +2,21 @@
 <html lang="pt-br">
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Bora Formar</title>
         <link rel="stylesheet" href="css/style.css">
     </head>
-    
+
     <body>
         <header id="header-content">
             <img src="assets/logo.png" alt="Logo do Bora Formar" id="site-logo">
-            
+
             <nav id="nav-bar" aria-label="Navegação principal">
                 <ul class="nav-links">
-                    <li class="nav-bar-item"><a href="#">Início</a></li>
-                    <li class="nav-bar-item"><a href="#">Sobre nós</a></li>
+                    <li class="nav-bar-item"><a href="#header-content">Início</a></li>
+                    <li class="nav-bar-item"><a href="#sobre">Sobre nós</a></li>
                 </ul>
-                
+
                 <div class="nav-actions">
                     <a href="pages/login.html" id="button-login" class="nav-button">Acessar conta</a>
                     <a href="pages/register.html" id="button-sign" class="nav-button secondary">Criar conta</a>
@@ -28,6 +29,41 @@
                 <h1>Perfeito para <span id="dynamic-text"></span> <span class="cursor" aria-hidden="true">|</span></h1>
                 <p>Gestão estruturada, eficiente e adequada ao contexto acadêmico.</p>
                 <a href="#sobre" class="cta-button">Conheça Agora</a>
+            </section>
+
+            <section id="sobre" class="about-section">
+                <div class="about-intro">
+                    <h2>Sobre o projeto</h2>
+                    <p>
+                        O Bora Formar é um sistema de gerenciamento de formatura desenvolvido para dar suporte
+                        às comissões de formatura em toda a organização financeira e administrativa do processo,
+                        desde a criação de salas por turma até o controle de mensalidades, rifas e movimentações
+                        de caixa.
+                    </p>
+                    <p>
+                        O projeto nasceu na disciplina de Laboratório de Software II, do curso superior de
+                        Sistemas para Internet, e foi construído a partir de levantamento de requisitos com
+                        stakeholders reais, aplicando na prática todo o ciclo de desenvolvimento de um software:
+                        análise, modelagem, implementação e validação com os usuários finais.
+                    </p>
+                </div>
+
+                <div class="team-section">
+                    <h3>Equipe de desenvolvimento</h3>
+                    <p class="team-subtitle">5º período — Sistemas para Internet</p>
+
+                    <div class="team-grid">
+                        <div class="team-card">
+                            <span class="team-name">Francisco Oliveira</span>
+                        </div>
+                        <div class="team-card">
+                            <span class="team-name">Francinaldo Francisco</span>
+                        </div>
+                        <div class="team-card">
+                            <span class="team-name">José Augusto</span>
+                        </div>
+                    </div>
+                </div>
             </section>
         </main>
 

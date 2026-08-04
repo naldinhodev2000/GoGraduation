@@ -1,4 +1,3 @@
-
 package fafenterprise.dev.gograduation.services;
 
 import java.time.LocalDateTime;
@@ -11,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import fafenterprise.dev.gograduation.dto.GroupUserDTO;
 import fafenterprise.dev.gograduation.dto.response.GroupResponseDTO;
 import fafenterprise.dev.gograduation.dto.response.UserResponseDTO;
+import fafenterprise.dev.gograduation.dto.response.DetailedMemberDTO;
 import fafenterprise.dev.gograduation.entity.relationship.GroupUserEntity;
 import fafenterprise.dev.gograduation.entity.uno.GroupEntity;
 import fafenterprise.dev.gograduation.entity.uno.UserEntity;
@@ -31,10 +31,6 @@ public class GroupUserService {
     private final GroupRepository groupRepo;
     private final JwtService jwtService;
 
-    /*
-     * Cria o vínculo entre o usuário logado e uma nova sala.
-     * O usuário que criou a sala vira ADMIN.
-     */
     public void create(UUID groupId) {
 
         UUID loggedUserId = jwtService.getLoggedId();
@@ -58,23 +54,16 @@ public class GroupUserService {
         groupUserRepo.save(groupUser);
     }
 
-    /*
-     * Adiciona um usuário à sala.
-     *
-     * Somente ADMIN pode adicionar usuários.
-     */
     public void addUser(
             GroupUserDTO groupUserDTO) {
 
         UUID groupId = groupUserDTO.idGroup();
 
-        // Verifica se o usuário logado pertence à sala
         if (!isUserInGroup(groupId)) {
             throw new RuntimeException(
                     "User is not a member of the group");
         }
 
-        // Verifica se o usuário logado é ADMIN
         if (!isUserAdmin(groupId)) {
             throw new RuntimeException(
                     "Only admins can add users");
@@ -103,8 +92,6 @@ public class GroupUserService {
                     "User already in group");
         }
 
-        // Se o usuário já esteve na sala e foi removido,
-        // apenas reativa o vínculo.
         if (existing != null &&
                 existing.getStatus() == GroupUserStatus.REMOVED) {
 
@@ -131,12 +118,6 @@ public class GroupUserService {
         groupUserRepo.save(groupUser);
     }
 
-    /*
-     * Remove um usuário da sala.
-     *
-     * Somente ADMIN pode remover.
-     * ADMIN não pode remover outro ADMIN.
-     */
     public void removeUser(
             UUID groupId,
             UUID userIdToRemove) {
@@ -151,15 +132,11 @@ public class GroupUserService {
                         "User is not in this group"));
 
         if (adminMembership.getStatus() != GroupUserStatus.ACTIVE) {
-
-            throw new RuntimeException(
-                    "User is not active in this group");
+            throw new RuntimeException("User is not active in this group");
         }
 
         if (adminMembership.getRole() != Role.ADMIN) {
-
-            throw new RuntimeException(
-                    "Only admins can remove users from the group");
+            throw new RuntimeException("Only admins can remove users from the group");
         }
 
         GroupUserEntity targetMembership = groupUserRepo
@@ -170,26 +147,28 @@ public class GroupUserService {
                         "Target user is not in this group"));
 
         if (targetMembership.getStatus() != GroupUserStatus.ACTIVE) {
-
-            throw new RuntimeException(
-                    "Target user is not active in this group");
+            throw new RuntimeException("Target user is not active in this group");
         }
 
         if (targetMembership.getRole() == Role.ADMIN) {
 
-            throw new RuntimeException(
-                    "Cannot remove another admin");
+            if (!loggedUserId.equals(userIdToRemove)) {
+                throw new RuntimeException("Você não pode remover outro administrador.");
+            }
+
+            long adminCount = groupUserRepo.findByGroup_Id(groupId).stream()
+                    .filter(u -> u.getStatus() == GroupUserStatus.ACTIVE && u.getRole() == Role.ADMIN)
+                    .count();
+
+            if (adminCount <= 1) {
+                throw new RuntimeException("Operação negada: Você é o único administrador e não pode sair da sala. Promova outro membro a administrador primeiro.");
+            }
         }
 
-        targetMembership.setStatus(
-                GroupUserStatus.REMOVED);
-
+        targetMembership.setStatus(GroupUserStatus.REMOVED);
         groupUserRepo.save(targetMembership);
     }
 
-    /*
-     * Entra em uma sala utilizando o token.
-     */
     public void joinGroup(
             String groupToken) {
 
@@ -243,10 +222,6 @@ public class GroupUserService {
                 "User already in group");
     }
 
-    /*
-     * Retorna apenas as salas ativas
-     * do usuário logado.
-     */
     public List<GroupResponseDTO> getJoinedGroups() {
 
         UUID userId = jwtService.getLoggedId();
@@ -272,11 +247,6 @@ public class GroupUserService {
                 .toList();
     }
 
-    /*
-     * Retorna os membros ativos de uma sala.
-     *
-     * Somente membros da própria sala podem consultar.
-     */
     public List<UserResponseDTO> getClassemates(
             UUID groupId) {
 
@@ -304,10 +274,29 @@ public class GroupUserService {
                 .toList();
     }
 
-    /*
-     * Verifica se o USUÁRIO LOGADO
-     * pertence à sala.
-     */
+    public List<DetailedMemberDTO> getDetailedClassmates(UUID groupId) {
+
+        validateUserInGroup(groupId);
+
+        List<GroupUserEntity> groupUsers = groupUserRepo
+                .findByGroup_Id(groupId);
+
+        return groupUsers
+                .stream()
+                .filter(groupUser -> groupUser.getStatus() == GroupUserStatus.ACTIVE)
+                .map(groupUser -> {
+
+                    UserEntity user = groupUser.getUser();
+
+                    return new DetailedMemberDTO(
+                            user.getId(),
+                            user.getName(),
+                            groupUser.getRole().name()
+                    );
+                })
+                .toList();
+    }
+
     public boolean isUserInGroup(
             UUID groupId) {
 
@@ -318,14 +307,6 @@ public class GroupUserService {
                 userId);
     }
 
-    /*
-     * Verifica se UM USUÁRIO ESPECÍFICO
-     * pertence à sala.
-     *
-     * Usado para validar, por exemplo:
-     * - vendedor de rifa
-     * - usuário de assinatura
-     */
     public boolean isUserInGroup(
             UUID groupId,
             UUID userId) {
@@ -337,10 +318,6 @@ public class GroupUserService {
                         GroupUserStatus.ACTIVE);
     }
 
-    /*
-     * Verifica se o usuário logado
-     * é ADMIN da sala.
-     */
     public boolean isUserAdmin(
             UUID groupId) {
 
@@ -386,4 +363,39 @@ public class GroupUserService {
                     "Only admins can perform this action");
         }
     }
+
+    public void changeRole(UUID groupId, UUID targetUserId, String newRole) {
+
+        validateAdmin(groupId);
+
+        GroupUserEntity targetMembership = groupUserRepo
+                .findByUser_IdAndGroup_Id(targetUserId, groupId)
+                .orElseThrow(() -> new RuntimeException("Target user is not in this group"));
+
+        if (targetMembership.getStatus() != GroupUserStatus.ACTIVE) {
+            throw new RuntimeException("Target user is not active in this group");
+        }
+
+        Role roleToSet;
+        try {
+            roleToSet = Role.valueOf(newRole.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Invalid role");
+        }
+
+        if (targetMembership.getRole() == Role.ADMIN && roleToSet != Role.ADMIN) {
+
+            long adminCount = groupUserRepo.findByGroup_Id(groupId).stream()
+                    .filter(u -> u.getStatus() == GroupUserStatus.ACTIVE && u.getRole() == Role.ADMIN)
+                    .count();
+
+            if (adminCount <= 1) {
+                throw new RuntimeException("Operação negada: A sala precisa ter pelo menos um administrador.");
+            }
+        }
+
+        targetMembership.setRole(roleToSet);
+        groupUserRepo.save(targetMembership);
+    }
+
 }

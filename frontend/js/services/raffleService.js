@@ -1,7 +1,7 @@
 import apiClient from "../apiClient.js";
 import { createRaffleRequest } from "../dtos/raffleRequest.js";
 
-const RAFFLE_BASE = "";
+const RAFFLE_BASE = "/raffles";
 
 const raffleService = {
     async create({ groupId, name, value, total }) {
@@ -9,8 +9,8 @@ const raffleService = {
         return apiClient.post(RAFFLE_BASE, body);
     },
 
-    async listAll() {
-        return apiClient.get(RAFFLE_BASE);
+    async listByGroup(groupId) {
+        return apiClient.get(`/raffles/group/${groupId}`);
     },
 
     async update(id, { groupId, name, value, total }) {

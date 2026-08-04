@@ -21,6 +21,8 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
    private final JwtFilter jwtFilter;
+   private final CustomAuthEntryPoint authEntryPoint;
+   private final CustomAccessDeniedHandler accessDeniedHandler;
 
    @Bean
    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -29,14 +31,15 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .exceptionHandling(exception -> exception
+                  .authenticationEntryPoint(authEntryPoint)
+                  .accessDeniedHandler(accessDeniedHandler))
             .authorizeHttpRequests(auth -> auth
-                  .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
-
                   .requestMatchers(
                         "/auth/**",
                         "/swagger-ui/**",
                         "/v3/api-docs/**",
-                        "/users/**")
+                        "/error")
                   .permitAll()
                   .anyRequest()
                   .authenticated())
@@ -51,12 +54,12 @@ public class SecurityConfig {
    public CorsConfigurationSource corsConfigurationSource() {
       CorsConfiguration configuration = new CorsConfiguration();
       configuration.setAllowedOrigins(List.of(
+            "http://localhost",
             "http://127.0.0.1:5500",
             "http://localhost:5500",
-            "http://localhost",
-            "http://127.0.0.1"
+            "https://boraformar.vercel.app"
       ));
-      configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+      configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
       configuration.setAllowedHeaders(List.of("*"));
       configuration.setAllowCredentials(true);
 

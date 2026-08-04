@@ -26,12 +26,6 @@ public class CashService {
     private final CashRegisterRepository cashRegisterRepository;
     private final GroupUserService groupUserService;
 
-    /*
-     * Consulta o caixa da comunidade.
-     *
-     * Somente usuários que pertencem à comunidade
-     * podem consultar.
-     */
     @Transactional(readOnly = true)
     public CashResponseDTO getCash(UUID groupId) {
 
@@ -56,12 +50,6 @@ public class CashService {
         );
     }
 
-    /*
-     * Atualiza o saldo do caixa.
-     *
-     * Este método é utilizado internamente
-     * após uma movimentação ser criada ou removida.
-     */
     public void updateCash(UUID groupId) {
 
         GroupEntity group = groupRepository
@@ -85,12 +73,6 @@ public class CashService {
         cashRegisterRepository.save(cash);
     }
 
-    /*
-     * Calcula o saldo:
-     *
-     * ENTRADA -> soma
-     * SAÍDA   -> subtrai
-     */
     private BigDecimal calculateCash(
             List<TransactionEntity> transactions) {
 
@@ -120,13 +102,6 @@ public class CashService {
         return total;
     }
 
-    /*
-     * Consulta quanto falta para atingir
-     * a meta da comunidade.
-     *
-     * Somente membros da comunidade
-     * podem consultar.
-     */
     @Transactional(readOnly = true)
     public RemainingToGoalDTO getRemainingToGoal(
             UUID groupId) {

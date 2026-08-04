@@ -2,6 +2,7 @@
 <html lang="pt-br">
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Bora Formar - Sala</title>
         <link rel="stylesheet" href="../css/sala.css">
     </head>
@@ -29,9 +30,11 @@
         </div>
 
         <main id="main-content">
+            <button id="link-membros" class="action-button">Membros</button>
             <button id="link-lancar" class="action-button">Lançar movimentação</button>
             <button id="link-mensalidade" class="action-button">Mensalidade</button>
             <button id="link-rifa" class="action-button">Criar Rifa</button>
+
 
             <section id="raffle-section">
                 <h2>Rifas</h2>
@@ -91,6 +94,9 @@
                 window.location.href = "login.html";
             });
 
+            document.getElementById("link-membros").addEventListener("click", () => {
+            window.location.href = `membros.html?id=${groupId}`;
+            });
             document.getElementById("link-lancar").addEventListener("click", () => {
                 window.location.href = `lancar-movimentacao.html?id=${groupId}`;
             });
@@ -135,16 +141,15 @@
             }
 
             async function loadRaffles() {
-                try {
-                    const raffles = await raffleService.listAll();
-                    const groupRaffles = raffles.filter((r) => r.groupId === groupId);
+            try {
+                const groupRaffles = await raffleService.listByGroup(groupId);
 
-                    if (groupRaffles.length === 0) {
-                        raffleEmpty.classList.remove("hidden");
-                        return;
-                    }
+                if (!groupRaffles || groupRaffles.length === 0) {
+                    raffleEmpty.classList.remove("hidden");
+                    return;
+                }
 
-                    groupRaffles.forEach((raffle) => {
+                groupRaffles.forEach((raffle) => {
                         const item = document.createElement("li");
                         item.textContent = `${raffle.name} — R$ ${Number(raffle.value).toFixed(2)} por número`;
                         raffleList.appendChild(item);

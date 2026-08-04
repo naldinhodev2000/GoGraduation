@@ -16,8 +16,13 @@ body {
 #header-content {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: 16px;
     padding: 16px 20px;
+}
+
+#header-content h1 {
+    word-break: break-word;
 }
 
 #menu-toggle {
@@ -80,6 +85,7 @@ body {
     position: fixed;
     right: 24px;
     bottom: 84px;
+    max-width: calc(100vw - 48px);
     background-color: #9fb1af;
     border-radius: 8px;
     padding: 12px;
@@ -146,7 +152,7 @@ body {
     display: block;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
     #main-content {
         padding: 12px;
     }
@@ -160,8 +166,9 @@ body {
     #add-menu {
         right: 16px;
         bottom: 76px;
+        max-width: calc(100vw - 32px);
     }
     #side-menu {
-        width: 80vw;
+        width: min(280px, 80vw);
     }
 }

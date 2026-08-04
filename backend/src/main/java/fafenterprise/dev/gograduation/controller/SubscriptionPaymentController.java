@@ -23,11 +23,6 @@ public class SubscriptionPaymentController {
 
     private final SubscriptionPaymentService paymentService;
 
-    /*
-     * Registra um pagamento.
-     *
-     * POST /subscription-payments/{subscriptionId}
-     */
     @PostMapping("/{subscriptionId}")
     public SubscriptionPaymentEntity create(
             @PathVariable UUID subscriptionId,
@@ -39,11 +34,6 @@ public class SubscriptionPaymentController {
         );
     }
 
-    /*
-     * Lista pagamentos de uma assinatura.
-     *
-     * GET /subscription-payments/subscription/{subscriptionId}
-     */
     @GetMapping("/subscription/{subscriptionId}")
     public List<SubscriptionPaymentEntity> listBySubscription(
             @PathVariable UUID subscriptionId) {
@@ -52,11 +42,6 @@ public class SubscriptionPaymentController {
                 .listBySubscription(subscriptionId);
     }
 
-    /*
-     * Lista todos os pagamentos de uma sala.
-     *
-     * GET /subscription-payments/group/{groupId}
-     */
     @GetMapping("/group/{groupId}")
     public List<SubscriptionPaymentEntity> listByGroup(
             @PathVariable UUID groupId) {
@@ -65,11 +50,6 @@ public class SubscriptionPaymentController {
                 .listByGroup(groupId);
     }
 
-    /*
-     * Exclui um pagamento.
-     *
-     * DELETE /subscription-payments/{paymentId}
-     */
     @DeleteMapping("/{paymentId}")
     public void delete(
             @PathVariable UUID paymentId) {

@@ -48,7 +48,8 @@ body {
 #form-entrar-sala {
     display: flex;
     flex-direction: column;
-    width: 320px;
+    width: 100%;
+    max-width: 320px;
 }
 
 #form-entrar-sala label {
@@ -57,7 +58,8 @@ body {
 }
 
 .form-item {
-    height: 36px;
+    width: 100%;
+    height: 40px;
     border: none;
     border-radius: 8px;
     padding: 0 12px;
@@ -65,6 +67,7 @@ body {
     background-color: #9fb1af;
     outline: none;
     color: #000;
+    font-size: 16px;
 }
 
 #form-error {
@@ -89,12 +92,8 @@ body {
     display: none;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
     #main-content {
         padding: 24px 16px;
-    }
-    form {
-        width: 100%;
-        max-width: 320px;
     }
 }

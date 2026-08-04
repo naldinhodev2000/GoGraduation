@@ -30,13 +30,11 @@ public class MonthlyFeeService {
 
         UUID groupId = monthlyFeeDTO.groupId();
 
-        // Usuário precisa ser membro da sala
         if (!groupUserService.isUserInGroup(groupId)) {
             throw new RuntimeException(
                     "User is not a member of the group");
         }
 
-        // Somente administrador pode criar mensalidade
         if (!groupUserService.isUserAdmin(groupId)) {
             throw new RuntimeException(
                     "Only admins can create monthly fees");
@@ -69,11 +67,9 @@ public class MonthlyFeeService {
                                 new RuntimeException(
                                         "Monthly fee not found"));
 
-        // A mensalidade pertence a esta sala
         UUID currentGroupId =
                 monthlyFee.getGroup().getId();
 
-        // Usuário precisa ser membro da sala atual
         if (!groupUserService.isUserInGroup(
                 currentGroupId)) {
 
@@ -81,7 +77,6 @@ public class MonthlyFeeService {
                     "User is not a member of the group");
         }
 
-        // Somente admin pode alterar
         if (!groupUserService.isUserAdmin(
                 currentGroupId)) {
 
@@ -89,8 +84,6 @@ public class MonthlyFeeService {
                     "Only admins can update monthly fees");
         }
 
-        // Impede mover a mensalidade para outra sala
-        // sem autorização da nova sala
         UUID newGroupId =
                 monthlyFeeDTO.groupId();
 
@@ -135,8 +128,6 @@ public class MonthlyFeeService {
     public List<MonthlyFeeDTO> getAllByGroupId(
             UUID groupId) {
 
-        // Qualquer membro ativo pode visualizar
-        // as mensalidades da sua sala
         if (!groupUserService.isUserInGroup(
                 groupId)) {
 

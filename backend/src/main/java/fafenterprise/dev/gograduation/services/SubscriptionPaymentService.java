@@ -23,11 +23,6 @@ public class SubscriptionPaymentService {
     private final SubscriptionRepository subscriptionRepository;
     private final GroupUserService groupUserService;
 
-    /*
-     * Registra um pagamento para uma assinatura.
-     *
-     * Somente ADMIN da sala pode registrar pagamentos.
-     */
     public SubscriptionPaymentEntity create(
             UUID subscriptionId,
             SubscriptionPaymentEntity payment) {
@@ -45,10 +40,8 @@ public class SubscriptionPaymentService {
                         .getGroup()
                         .getId();
 
-        // Verifica se o usuário logado é membro
         validateMember(groupId);
 
-        // Somente admin pode registrar pagamento
         validateAdmin(groupId);
 
         payment.setId(null);
@@ -63,11 +56,6 @@ public class SubscriptionPaymentService {
         return paymentRepository.save(payment);
     }
 
-    /*
-     * Lista os pagamentos de uma assinatura.
-     *
-     * Somente membros da sala podem visualizar.
-     */
     @Transactional(readOnly = true)
     public List<SubscriptionPaymentEntity> listBySubscription(
             UUID subscriptionId) {
@@ -91,11 +79,6 @@ public class SubscriptionPaymentService {
                 .findBySubscriptionId(subscriptionId);
     }
 
-    /*
-     * Lista todos os pagamentos de uma sala.
-     *
-     * Somente membros da sala podem visualizar.
-     */
     @Transactional(readOnly = true)
     public List<SubscriptionPaymentEntity> listByGroup(
             UUID groupId) {
@@ -108,11 +91,6 @@ public class SubscriptionPaymentService {
                 );
     }
 
-    /*
-     * Exclui um pagamento.
-     *
-     * Somente ADMIN da sala pode excluir.
-     */
     public void delete(UUID paymentId) {
 
         SubscriptionPaymentEntity payment =

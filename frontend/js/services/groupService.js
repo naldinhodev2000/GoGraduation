@@ -28,8 +28,16 @@ const groupService = {
         return apiClient.delete(`/groups/${groupId}/users/${userId}`);
     },
 
+    async getMyRole(groupId) {
+        return apiClient.get(`/groups/${groupId}/my-role`);
+    },
+
     async joinByToken(token) {
         return apiClient.post("/groups/join", { token });
+    },
+
+    async getById(id) {
+        return apiClient.get(`/groups/${id}`);
     },
 
     async getMembers(groupId) {

@@ -55,12 +55,10 @@ public class TransactionEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-    // Caso a entrada seja referente a uma rifa
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "raffle_id")
     private RaffleEntity raffle;
 
-    // Caso a entrada seja referente ao pagamento de uma mensalidade
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subscription_payment_id")
     private SubscriptionPaymentEntity subscriptionPayment;

@@ -40,10 +40,8 @@ public class TransactionService {
 
         UUID groupId = transactionDTO.groupId();
 
-        // Usuário precisa ser membro da comunidade
         groupUserService.validateUserInGroup(groupId);
 
-        // Somente ADMIN pode lançar movimentações
         groupUserService.validateAdmin(groupId);
 
         GroupEntity group = groupRepository
@@ -59,7 +57,6 @@ public class TransactionService {
                     "Caixa da comunidade não encontrado");
         }
 
-        // Usuário logado através do JWT
         UUID loggedUserId = jwtService.getLoggedId();
 
         UserEntity user = userRepository
@@ -89,9 +86,6 @@ public class TransactionService {
 
         transaction.setUser(user);
 
-        /*
-         * Vincula a movimentação a uma RIFA.
-         */
         if (transactionDTO.raffleId() != null) {
 
             RaffleEntity raffle =
@@ -113,10 +107,6 @@ public class TransactionService {
             transaction.setRaffle(raffle);
         }
 
-        /*
-         * Vincula a movimentação a um
-         * pagamento de mensalidade.
-         */
         if (transactionDTO.subscriptionPaymentId()
                 != null) {
 
@@ -148,7 +138,6 @@ public class TransactionService {
 
         transactionRepository.save(transaction);
 
-        // Recalcula o saldo do caixa
         cashService.updateCash(groupId);
 
         return transactionDTO;
@@ -174,15 +163,12 @@ public class TransactionService {
                 .getGroup()
                 .getId();
 
-        // Usuário precisa pertencer à comunidade
         groupUserService.validateUserInGroup(groupId);
 
-        // Somente ADMIN pode excluir
         groupUserService.validateAdmin(groupId);
 
         transactionRepository.delete(transaction);
 
-        // Atualiza o saldo após excluir
         cashService.updateCash(groupId);
     }
 }

@@ -2,12 +2,13 @@
 <html lang="pt-br">
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Bora Formar - Criar Rifa</title>
         <link rel="stylesheet" href="../css/criar-rifa.css">
     </head>
     <body>
         <header id="header-content">
-            <button id="menu-toggle" aria-label="Menu">☰</button>
+            <a id="back-link" href="#">‹ Voltar</a>
             <h1>Criar Rifa</h1>
         </header>
         <main id="main-content">
@@ -31,10 +32,12 @@
 
             const form = document.getElementById("form-rifa");
             const errorMessage = document.getElementById("form-error");
+            const backLink = document.getElementById("back-link");
 
             if (!groupId) {
-                document.getElementById("back-link").href = `sala.html?id=${groupId}`;
+                window.location.href = "salas.html";
             }
+            backLink.href = `sala.html?id=${groupId}`;
 
             form.addEventListener("submit", async (event) => {
                 event.preventDefault();

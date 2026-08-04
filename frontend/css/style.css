@@ -12,24 +12,28 @@
 :root {
     --primary-color: #6F5A8A;
     --secondary-color: #8A7FA3;
-    --accent-color: #B8B2A8;    
+    --accent-color: #B8B2A8;
     --background-site: #F7F8F9;
-    --text-main: #2B2E34;       
-    --text-muted: #7A7F87;     
+    --text-main: #2B2E34;
+    --text-muted: #7A7F87;
 }
 
 body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
     background-color: var(--background-site);
     color: var(--text-main);
 }
 
-/* header */
 #header-content {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    padding: 20px;
+    gap: 12px;
+    padding: 16px 20px;
     background-color: var(--secondary-color);
 }
 
@@ -41,13 +45,15 @@ body {
 
 #nav-bar {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 20px;
+    gap: 16px;
 }
 
 .nav-links {
     display: flex;
-    gap: 20px;
+    flex-wrap: wrap;
+    gap: 16px;
     align-items: center;
 }
 
@@ -107,26 +113,29 @@ a {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
-/* main */
 #main-content {
     flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 75vh;
-    padding: 2rem;
 }
 
 .hero-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     text-align: center;
+    min-height: 70vh;
     max-width: 800px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 2rem 1.25rem;
 }
 
 .hero-container h1 {
-    font-size: 3rem;
+    font-size: clamp(1.8rem, 5vw + 1rem, 3rem);
     margin-bottom: 1rem;
     color: var(--primary-color);
     line-height: 1.2;
+    word-wrap: break-word;
 }
 
 #dynamic-text {
@@ -140,7 +149,7 @@ a {
 }
 
 .hero-container p {
-    font-size: 1.25rem;
+    font-size: clamp(1rem, 1.5vw + 0.7rem, 1.25rem);
     color: var(--text-muted);
     margin-bottom: 2rem;
 }
@@ -167,11 +176,142 @@ a {
     50% { opacity: 0; }
 }
 
-/* footer */
+.about-section {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 3rem 1.25rem 4rem;
+}
+
+.about-intro {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.about-intro h2 {
+    font-size: clamp(1.5rem, 2vw + 1rem, 2rem);
+    color: var(--primary-color);
+    margin-bottom: 1.25rem;
+}
+
+.about-intro p {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--text-main);
+    margin-bottom: 1rem;
+}
+
+.team-section {
+    margin-top: 3rem;
+    text-align: center;
+}
+
+.team-section h3 {
+    font-size: 1.4rem;
+    color: var(--primary-color);
+    margin-bottom: 0.25rem;
+}
+
+.team-subtitle {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+}
+
+.team-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.team-card {
+    background-color: #ffffff;
+    border: 1px solid var(--accent-color);
+    border-radius: 12px;
+    padding: 1.1rem 1.5rem;
+    min-width: 200px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.team-name {
+    font-weight: 700;
+    color: var(--text-main);
+}
+
 #footer-content {
     background-color: var(--primary-color);
     color: #ffffff;
     padding: 20px;
     text-align: center;
     margin-top: auto;
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+    #header-content {
+    justify-content: center;
+    text-align: center;
+    }
+
+    #nav-bar {
+    justify-content: center;
+    width: 100%;
+    }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    #site-logo {
+        width: 48px;
+        height: 48px;
+    }
+
+    .nav-links {
+        gap: 12px;
+        font-size: 14px;
+    }
+
+    .nav-actions {
+        width: 100%;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    #button-login, #button-sign {
+        width: auto;
+        padding: 0 16px;
+    }
+
+    #main-content {
+        padding: 0;
+    }
+
+    .hero-container {
+        min-height: 60vh;
+        padding: 1.5rem 1rem;
+    }
+
+    .hero-container p {
+        margin-bottom: 1.5rem;
+    }
+
+    .cta-button {
+        width: 100%;
+        max-width: 280px;
+    }
+
+    .about-section {
+        padding: 2rem 1rem 3rem;
+    }
+
+    .team-grid {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .team-card {
+        width: 100%;
+        max-width: 280px;
+    }
 }

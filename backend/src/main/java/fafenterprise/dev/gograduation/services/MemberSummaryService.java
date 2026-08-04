@@ -72,6 +72,11 @@ public class MemberSummaryService {
                     .orElse(null);
         }
 
+        UUID subscriptionId =
+                subscription != null
+                        ? subscription.getId()
+                        : null;
+
         SubscriptionStatus subscriptionStatus =
                 subscription != null
                         ? subscription.getStatus()
@@ -88,6 +93,7 @@ public class MemberSummaryService {
                 groupUser.getUser().getEmail(),
                 groupUser.getUser().getTelefone(),
                 groupUser.getStatus(),
+                subscriptionId,
                 subscriptionStatus,
                 overdue,
                 rafflesSold,
@@ -99,24 +105,20 @@ public class MemberSummaryService {
             MonthlyFeeEntity monthlyFee,
             SubscriptionEntity subscription) {
 
-        // Não existe mensalidade vigente
         if (monthlyFee == null) {
             return false;
         }
 
-        // Usuário não possui assinatura da mensalidade atual
         if (subscription == null) {
             return true;
         }
 
-        // Assinatura suspensa ou cancelada
         if (subscription.getStatus() == SubscriptionStatus.SUSPENDED
                 || subscription.getStatus() == SubscriptionStatus.CANCELED) {
 
             return true;
         }
 
-        // A mensalidade já terminou
         if (monthlyFee.getEndDate() != null
                 && monthlyFee.getEndDate().isBefore(LocalDate.now())) {
 

@@ -12,13 +12,10 @@ import fafenterprise.dev.gograduation.entity.relationship.SubscriptionEntity;
 public interface SubscriptionRepository
         extends JpaRepository<SubscriptionEntity, UUID> {
 
-    // Busca todas as assinaturas de uma sala
     List<SubscriptionEntity> findByMonthlyFeeGroupId(
             UUID groupId
     );
 
-    // Verifica se um usuário já está inscrito
-    // em uma determinada mensalidade
     Optional<SubscriptionEntity> findByMonthlyFeeIdAndUserId(
             UUID monthlyFeeId,
             UUID userId

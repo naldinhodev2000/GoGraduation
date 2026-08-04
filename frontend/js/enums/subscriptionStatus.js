@@ -1,7 +1,7 @@
 export const SubscriptionStatus = Object.freeze({
-    ATIVA: "ATIVA",
-    SUSPENSA: "SUSPENSA",
-    CANCELADA: "CANCELADA"
+    ACTIVE: "ACTIVE",
+    SUSPENDED: "SUSPENDED",
+    CANCELED: "CANCELED"
 });
 
 export default SubscriptionStatus;

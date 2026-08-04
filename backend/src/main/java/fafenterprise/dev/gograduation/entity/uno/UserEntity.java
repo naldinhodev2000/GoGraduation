@@ -65,4 +65,16 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "user")
     private List<RaffleSellerEntity> raffles;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
 }

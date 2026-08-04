@@ -1,4 +1,5 @@
-const API_BASE_URL = "http://localhost:8080";
+//const API_BASE_URL = "http://localhost:8080";
+const API_BASE_URL = "https://api-bora-formar.onrender.com";
 
 function getToken() {
     return localStorage.getItem("token");
@@ -12,31 +13,53 @@ function clearToken() {
     localStorage.removeItem("token");
 }
 
+function friendlyMessage(status, rawMessage) {
+    const known = {
+        400: "Dados inválidos. Verifique os campos e tente novamente.",
+        401: "Sua sessão expirou. Faça login novamente.",
+        403: "Você não tem permissão para realizar esta ação.",
+        404: "Não foi possível encontrar o que você procurava.",
+        409: "Não foi possível concluir por um conflito de dados.",
+        422: "Dados inválidos. Verifique os campos e tente novamente.",
+        500: "Ocorreu um erro no servidor. Tente novamente em instantes.",
+        502: "O servidor está indisponível no momento.",
+        503: "O servidor está indisponível no momento."
+    };
+
+    if (known[status]) {
+        return known[status];
+    }
+
+    if (status >= 500) {
+        return "Ocorreu um erro no servidor. Tente novamente em instantes.";
+    }
+
+    if (rawMessage && rawMessage.length < 150 && !rawMessage.includes("Exception")) {
+        return rawMessage;
+    }
+
+    return "Não foi possível concluir a solicitação. Tente novamente.";
+}
+
 async function request(endpoint, options = {}) {
     const token = getToken();
 
-    let formattedEndpoint = endpoint.trim();
-    if (!formattedEndpoint.startsWith("/")) {
-        formattedEndpoint = `/${formattedEndpoint}`;
-    }
-    if (formattedEndpoint.length > 1 && formattedEndpoint.endsWith("/")) {
-        formattedEndpoint = formattedEndpoint.slice(0, -1);
-    }
+    const headers = {
+        "Content-Type": "application/json",
+        ...(token ? { "Authorization": `Bearer ${token}` } : {}),
+        ...options.headers
+    };
 
-    const headers = { ...options.headers };
-
-    if (token) {
-        headers["Authorization"] = `Bearer ${token}`;
+    let response;
+    try {
+        response = await fetch(`${API_BASE_URL}${endpoint}`, {
+            ...options,
+            headers
+        });
+    } catch (networkError) {
+        console.error("Erro de rede:", networkError);
+        throw new Error("Não foi possível conectar ao servidor. Verifique sua conexão.");
     }
-
-    if (options.body) {
-        headers["Content-Type"] = "application/json";
-    }
-
-    const response = await fetch(`${API_BASE_URL}${formattedEndpoint}`, {
-        ...options,
-        headers
-    });
 
     if (response.status === 204) {
         return null;
@@ -49,13 +72,16 @@ async function request(endpoint, options = {}) {
     }
 
     if (!response.ok) {
-        const message = (data && (data.message || data.error)) || `Erro ${response.status} ao acessar ${formattedEndpoint}`;
+        const rawMessage = data && (data.message || data.error);
+
+
+        console.error(`[API] ${response.status} em ${endpoint}:`, rawMessage || "(sem corpo)");
 
         if (response.status === 401) {
             clearToken();
         }
 
-        throw new Error(message);
+        throw new Error(friendlyMessage(response.status, rawMessage));
     }
 
     return data;
@@ -66,19 +92,16 @@ const apiClient = {
         return request(endpoint, { method: "GET" });
     },
     post(endpoint, body) {
-        return request(endpoint, {
-            method: "POST",
-            body: body ? JSON.stringify(body) : JSON.stringify({}) // Envia {} vazio em vez de undefined se não houver body
-        });
+        return request(endpoint, { method: "POST", body: body !== undefined ? JSON.stringify(body) : undefined });
     },
     put(endpoint, body) {
-        return request(endpoint, {
-            method: "PUT",
-            body: body ? JSON.stringify(body) : JSON.stringify({})
-        });
+        return request(endpoint, { method: "PUT", body: body !== undefined ? JSON.stringify(body) : undefined });
     },
     delete(endpoint) {
         return request(endpoint, { method: "DELETE" });
+    },
+    patch(endpoint, body) {
+        return request(endpoint, { method: "PATCH", body: body !== undefined ? JSON.stringify(body) : undefined });
     },
     getToken,
     setToken,

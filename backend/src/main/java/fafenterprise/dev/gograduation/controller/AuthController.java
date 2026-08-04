@@ -28,5 +28,5 @@ public class AuthController {
     @PostMapping("/register")
     public UserResponseDTO register(@RequestBody UserRequestDTO request){
         return authService.register(request);
-}
+    }
 }

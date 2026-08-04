@@ -51,13 +51,12 @@ public class SubscriptionPaymentEntity {
     )
     private BigDecimal value;
 
-    /*
-     * Referência da mensalidade.
-     *
-     * Exemplo:
-     * 2026-07
-     * 2026-08
-     */
+    @Column(columnDefinition = "LONGTEXT")
+    private String proofImage;
+
+    @Column(columnDefinition = "TEXT")
+    private String note;
+
     @Column(
             name = "reference",
             nullable = false

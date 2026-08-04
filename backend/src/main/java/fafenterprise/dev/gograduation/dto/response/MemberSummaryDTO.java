@@ -12,6 +12,7 @@ public record MemberSummaryDTO(
         String email,
         String telefone,
         GroupUserStatus groupStatus,
+        UUID subscriptionId,
         SubscriptionStatus subscriptionStatus,
         boolean overdue,
         Integer rafflesSold,

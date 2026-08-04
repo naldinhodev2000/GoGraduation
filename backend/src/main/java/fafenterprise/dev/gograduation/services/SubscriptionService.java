@@ -28,11 +28,7 @@ public class SubscriptionService {
     private final SubscriptionRepository subscriptionRepository;
     private final GroupUserService groupUserService;
 
-    /*
-     * Inscreve um usuário em uma mensalidade.
-     *
-     * Somente ADMIN da sala pode realizar essa operação.
-     */
+
     public SubscriptionEntity subscribe(
             SubscriptionDTO subscriptionDTO) {
 
@@ -48,10 +44,8 @@ public class SubscriptionService {
                         .getGroup()
                         .getId();
 
-        // O usuário logado precisa pertencer à sala
         validateMember(groupId);
 
-        // Somente ADMIN pode cadastrar assinaturas
         validateAdmin(groupId);
 
         UserEntity user =
@@ -61,8 +55,6 @@ public class SubscriptionService {
                                 new RuntimeException(
                                         "User not found"));
 
-        // O usuário que será inscrito
-        // também precisa pertencer à sala
         if (!groupUserService.isUserInGroup(
                 groupId,
                 user.getId())) {
@@ -86,11 +78,6 @@ public class SubscriptionService {
                 subscription);
     }
 
-    /*
-     * Altera o status de uma assinatura.
-     *
-     * Somente ADMIN da sala pode alterar.
-     */
     public void changeStatus(
             UUID subscriptionId,
             SubscriptionStatus status) {
@@ -117,11 +104,6 @@ public class SubscriptionService {
                 subscription);
     }
 
-    /*
-     * Lista as assinaturas de uma sala.
-     *
-     * Somente membros ativos da sala podem visualizar.
-     */
     public List<SubscriptionEntity> listByGroup(
             UUID groupId) {
 
@@ -131,9 +113,6 @@ public class SubscriptionService {
                 .findByMonthlyFeeGroupId(groupId);
     }
 
-    /*
-     * Verifica se o usuário logado pertence à sala.
-     */
     private void validateMember(
             UUID groupId) {
 
@@ -145,9 +124,6 @@ public class SubscriptionService {
         }
     }
 
-    /*
-     * Verifica se o usuário logado é ADMIN da sala.
-     */
     private void validateAdmin(
             UUID groupId) {
 

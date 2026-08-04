@@ -30,11 +30,6 @@ public class RaffleService {
     private final UserRepository userRepo;
     private final GroupUserService groupUserService;
 
-    /*
-     * Cria uma nova rifa.
-     *
-     * Somente ADMIN da sala pode criar.
-     */
     public RaffleResponseDTO create(
             RaffleRequestDTO raffleRequestDTO) {
 
@@ -68,11 +63,6 @@ public class RaffleService {
         return toResponseDTO(raffle);
     }
 
-    /*
-     * Lista as rifas de uma sala.
-     *
-     * Qualquer membro ativo pode visualizar.
-     */
     public List<RaffleResponseDTO> listByGroup(
             UUID groupId) {
 
@@ -85,11 +75,6 @@ public class RaffleService {
                 .toList();
     }
 
-    /*
-     * Atualiza uma rifa.
-     *
-     * Somente ADMIN pode alterar.
-     */
     public RaffleResponseDTO update(
             UUID id,
             RaffleRequestDTO raffleRequestDTO) {
@@ -110,12 +95,8 @@ public class RaffleService {
                 raffleRequestDTO
                         .groupId();
 
-        // Admin da sala atual
         validateAdmin(oldGroupId);
 
-        // Se a rifa for movida para outra sala,
-        // o usuário também precisa ser admin
-        // da nova sala.
         if (!oldGroupId.equals(newGroupId)) {
             validateAdmin(newGroupId);
         }
@@ -143,11 +124,6 @@ public class RaffleService {
         return toResponseDTO(raffle);
     }
 
-    /*
-     * Exclui uma rifa.
-     *
-     * Somente ADMIN da sala pode excluir.
-     */
     public void delete(UUID id) {
 
         RaffleEntity raffle =
@@ -167,12 +143,6 @@ public class RaffleService {
         raffleRepo.delete(raffle);
     }
 
-    /*
-     * Define um vendedor para uma rifa.
-     *
-     * O vendedor precisa pertencer
-     * à mesma sala da rifa.
-     */
     public void setRaffleSeller(
             UUID raffleId,
             UUID userId) {
@@ -189,7 +159,6 @@ public class RaffleService {
                         .getGroup()
                         .getId();
 
-        // Somente ADMIN pode definir vendedores
         validateAdmin(groupId);
 
         UserEntity seller =
@@ -199,8 +168,6 @@ public class RaffleService {
                                 new RuntimeException(
                                         "User not found"));
 
-        // O vendedor precisa pertencer
-        // à mesma sala da rifa
         if (!groupUserService.isUserInGroup(
                 groupId,
                 userId)) {
@@ -219,10 +186,6 @@ public class RaffleService {
                 raffleSeller);
     }
 
-    /*
-     * Valida se o usuário logado é membro
-     * ativo da sala.
-     */
     private void validateMember(
             UUID groupId) {
 
@@ -234,10 +197,6 @@ public class RaffleService {
         }
     }
 
-    /*
-     * Valida se o usuário logado é ADMIN
-     * da sala.
-     */
     private void validateAdmin(
             UUID groupId) {
 
@@ -251,9 +210,6 @@ public class RaffleService {
         }
     }
 
-    /*
-     * Converte Entity para ResponseDTO.
-     */
     private RaffleResponseDTO toResponseDTO(
             RaffleEntity raffle) {
 
