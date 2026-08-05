@@ -1,92 +1,214 @@
 <!DOCTYPE html>
-<html lang="pt-br">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Bora Formar - Salas</title>
-        <link rel="stylesheet" href="../css/salas.css">
-    </head>
-    <body>
-        <header id="header-content">
-            <button id="menu-toggle" aria-label="Menu">☰</button>
-            <h1>Salas</h1>
-        </header>
-        <main id="main-content">
-            <ul id="room-list"></ul>
-            <p id="empty-state" class="hidden">Você ainda não participa de nenhuma sala.</p>
-        </main>
-        <button id="add-button" aria-label="Adicionar">+</button>
-        <div id="add-menu">
-            <a id="link-criar-sala" href="criar-sala.html">Criar Sala</a>
-            <a id="link-entrar-sala" href="entrar-sala.html">Participar</a>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bora Formar - Minhas Salas</title>
+
+    <link rel="stylesheet" href="../css/salas.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+
+<body>
+
+    <header id="header-content">
+
+        <button id="menu-toggle" aria-label="Abrir menu">
+            ☰
+        </button>
+
+        <div class="header-text">
+            <h1>Minhas Salas</h1>
+            <p>Escolha uma turma para continuar</p>
         </div>
-        <nav id="side-menu">
-            <a href="salas.html">Início</a>
-            <button id="logout-button">Sair</button>
-        </nav>
-        <div id="menu-overlay"></div>
 
-        <script type="module">
-            import userService from "../js/services/userService.js";
-            import authService from "../js/services/authService.js";
+    </header>
 
-            if (!authService.isAuthenticated()) {
-                window.location.href = "login.html";
-            }
+    <nav id="side-menu">
 
-            const roomList = document.getElementById("room-list");
-            const emptyState = document.getElementById("empty-state");
-            const addButton = document.getElementById("add-button");
-            const addMenu = document.getElementById("add-menu");
-            const menuToggle = document.getElementById("menu-toggle");
-            const sideMenu = document.getElementById("side-menu");
-            const menuOverlay = document.getElementById("menu-overlay");
-            const logoutButton = document.getElementById("logout-button");
+        <div class="menu-header">
 
-            addButton.addEventListener("click", () => {
-                addMenu.classList.toggle("open");
-            });
+            <div class="user-avatar">
+                👤
+            </div>
 
-            menuToggle.addEventListener("click", () => {
-                sideMenu.classList.toggle("open");
-                menuOverlay.classList.toggle("open");
-            });
-            menuOverlay.addEventListener("click", () => {
-                sideMenu.classList.remove("open");
-                menuOverlay.classList.remove("open");
-            });
-            logoutButton.addEventListener("click", () => {
-                authService.logout();
-                window.location.href = "login.html";
-            });
+            <h2>Bora Formar</h2>
 
-            async function loadGroups() {
-                try {
-                    const groups = await userService.getJoinedGroups();
+            <span>
+                Gestão de Formaturas
+            </span>
 
-                    if (!groups || groups.length === 0) {
-                        emptyState.classList.remove("hidden");
-                        return;
-                    }
+        </div>
 
-                    groups.forEach((group) => {
-                        const item = document.createElement("li");
-                        const button = document.createElement("button");
-                        button.className = "room-button";
-                        button.textContent = group.name;
-                        button.addEventListener("click", () => {
-                            window.location.href = `sala.html?id=${group.id}`;
-                        });
-                        item.appendChild(button);
-                        roomList.appendChild(item);
-                    });
-                } catch (error) {
-                    emptyState.textContent = error.message || "Não foi possível carregar suas salas.";
+        <div class="menu-items">
+
+            <a href="salas.html">
+                🏠
+                <span>Início</span>
+            </a>
+
+            <button id="logout-button">
+                🚪
+                <span>Sair</span>
+            </button>
+
+        </div>
+
+    </nav>
+
+    <div id="menu-overlay"></div>
+
+    <main id="main-content">
+
+        <section class="page-title">
+
+            <h2>Suas Salas</h2>
+
+            <p>
+                Todas as salas das quais você participa aparecerão aqui.
+            </p>
+
+        </section>
+
+        <ul id="room-list"></ul>
+
+        <div id="empty-state" class="hidden">
+
+            <div class="empty-icon">
+                🎓
+            </div>
+
+            <h3>
+                Nenhuma sala encontrada
+            </h3>
+
+            <p>
+                Você ainda não participa de nenhuma sala.
+                Clique no botão abaixo para criar uma nova ou entrar utilizando um código.
+            </p>
+
+        </div>
+
+    </main>
+
+    <button id="add-button" aria-label="Adicionar sala">
+        +
+    </button>
+
+    <div id="add-menu">
+
+        <a href="criar-sala.html">
+            ➕ Criar Sala
+        </a>
+
+        <a href="entrar-sala.html">
+            🔑 Participar
+        </a>
+
+    </div>
+
+    <script type="module">
+
+        import userService from "../js/services/userService.js";
+        import authService from "../js/services/authService.js";
+
+        if (!authService.isAuthenticated()) {
+            window.location.href = "login.html";
+        }
+
+        const roomList = document.getElementById("room-list");
+        const emptyState = document.getElementById("empty-state");
+
+        const addButton = document.getElementById("add-button");
+        const addMenu = document.getElementById("add-menu");
+
+        const menuToggle = document.getElementById("menu-toggle");
+        const sideMenu = document.getElementById("side-menu");
+        const menuOverlay = document.getElementById("menu-overlay");
+
+        const logoutButton = document.getElementById("logout-button");
+
+        addButton.addEventListener("click", () => {
+            addMenu.classList.toggle("open");
+        });
+
+        menuToggle.addEventListener("click", () => {
+            sideMenu.classList.toggle("open");
+            menuOverlay.classList.toggle("open");
+        });
+
+        menuOverlay.addEventListener("click", () => {
+            sideMenu.classList.remove("open");
+            menuOverlay.classList.remove("open");
+        });
+
+        logoutButton.addEventListener("click", () => {
+            authService.logout();
+            window.location.href = "login.html";
+        });
+
+        async function loadGroups() {
+
+            try {
+
+                const groups = await userService.getJoinedGroups();
+
+                if (!groups || groups.length === 0) {
+
                     emptyState.classList.remove("hidden");
+                    return;
+
                 }
+
+                groups.forEach(group => {
+
+                    const item = document.createElement("li");
+                    item.className = "room-card";                    item.innerHTML = `
+                        <div class="room-info">
+
+                            <div class="room-icon">
+                                🎓
+                            </div>
+
+                            <div class="room-details">
+                                <h3>${group.name}</h3>
+                                <p>Clique para acessar a sala</p>
+                            </div>
+
+                        </div>
+
+                        <div class="room-arrow">
+                            →
+                        </div>
+                    `;
+
+                    item.addEventListener("click", () => {
+                        window.location.href = `sala.html?id=${group.id}`;
+                    });
+
+                    roomList.appendChild(item);
+
+                });
+
+            } catch (error) {
+
+                emptyState.innerHTML = `
+                    <div class="empty-icon">⚠️</div>
+                    <h3>Ops!</h3>
+                    <p>${error.message || "Não foi possível carregar suas salas."}</p>
+                `;
+
+                emptyState.classList.remove("hidden");
             }
 
-            loadGroups();
-        </script>
-    </body>
+        }
+
+        loadGroups();
+
+    </script>
+
+</body>
+
 </html>

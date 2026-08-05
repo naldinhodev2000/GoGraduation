@@ -1,174 +1,479 @@
 @import url('https://fonts.googleapis.com/css2?family=Sarala:wght@400;700&display=swap');
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: "Sarala", sans-serif;
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Sarala",sans-serif;
 }
 
-body {
-    min-height: 100vh;
-    background-color: #ffffff;
-    color: #000;
+:root{
+    --primary:#6F5A8A;
+    --secondary:#8A7FA3;
+    --background:#F7F8F9;
+    --surface:#FFFFFF;
+    --text:#2B2E34;
+    --muted:#7A7F87;
+    --shadow:0 8px 20px rgba(0,0,0,.08);
 }
 
-#header-content {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 16px;
-    padding: 16px 20px;
+html{
+    scroll-behavior:smooth;
 }
 
-#header-content h1 {
-    word-break: break-word;
+body{
+    min-height:100vh;
+    background:linear-gradient(180deg,#f7f8f9 0%,#f2eef8 100%);
+    color:var(--text);
 }
 
-#menu-toggle {
-    background: none;
-    border: none;
-    font-size: 22px;
-    cursor: pointer;
-    color: #000;
+#header-content{
+    position:sticky;
+    top:0;
+    z-index:5;
+
+    display:flex;
+    align-items:center;
+    gap:18px;
+
+    padding:18px 24px;
+
+    background:#fff;
+
+    box-shadow:0 2px 12px rgba(0,0,0,.05);
 }
 
-#header-content h1 {
-    font-size: 18px;
-    font-weight: 600;
+#menu-toggle{
+    width:42px;
+    height:42px;
+
+    border:none;
+    border-radius:12px;
+
+    background:var(--primary);
+
+    color:#fff;
+
+    cursor:pointer;
+
+    font-size:20px;
+
+    transition:.25s;
 }
 
-#main-content {
-    padding: 20px;
+#menu-toggle:hover{
+    transform:scale(1.05);
 }
 
-#room-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    max-width: 320px;
+.header-text h1{
+    font-size:1.7rem;
+    color:var(--primary);
 }
 
-.room-button {
-    width: 100%;
-    height: 36px;
-    border: none;
-    border-radius: 8px;
-    background-color: #9fb1af;
-    text-align: left;
-    padding: 0 12px;
-    cursor: pointer;
-    color: #000;
+.header-text p{
+    color:var(--muted);
+    font-size:.9rem;
 }
 
-#empty-state {
-    color: #555;
-    font-size: 14px;
+#main-content{
+    max-width:1000px;
+    margin:auto;
+    padding:40px 20px 120px;
 }
 
-#add-button {
-    position: fixed;
-    right: 24px;
-    bottom: 24px;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    border: none;
-    background-color: #e0e0e0;
-    font-size: 24px;
-    cursor: pointer;
-    color: #000;
+.page-title{
+    margin-bottom:35px;
 }
 
-#add-menu {
-    position: fixed;
-    right: 24px;
-    bottom: 84px;
-    max-width: calc(100vw - 48px);
-    background-color: #9fb1af;
-    border-radius: 8px;
-    padding: 12px;
-    flex-direction: column;
-    gap: 8px;
-    display: none;
+.page-title h2{
+    font-size:2rem;
+    color:var(--primary);
 }
 
-#add-menu.open {
-    display: flex;
+.page-title p{
+    margin-top:6px;
+    color:var(--muted);
 }
 
-#add-menu a {
-    color: #000;
-    text-decoration: none;
-    font-size: 14px;
+#room-list{
+    list-style:none;
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+
+    gap:20px;
 }
 
-.hidden {
-    display: none;
+.room-card{
+
+    background:var(--surface);
+
+    border-radius:18px;
+
+    padding:22px;
+
+    box-shadow:var(--shadow);
+
+    cursor:pointer;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    transition:.25s;
 }
 
-#side-menu {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    width: 220px;
-    background-color: #ffffff;
-    border-right: 1px solid #e0e0e0;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: 20px;
-    transform: translateX(-100%);
-    transition: transform 0.2s ease;
-    z-index: 20;
+.room-card:hover{
+
+    transform:translateY(-5px);
+
+    box-shadow:0 18px 30px rgba(0,0,0,.12);
 }
 
-#side-menu.open {
-    transform: translateX(0);
+.room-info{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
 }
 
-#side-menu a, #side-menu button {
-    background: none;
-    border: none;
-    text-align: left;
-    font-size: 15px;
-    color: #000;
-    text-decoration: none;
-    cursor: pointer;
-    padding: 8px 0;
+.room-icon{
+
+    width:60px;
+
+    height:60px;
+
+    border-radius:16px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:rgba(111,90,138,.12);
+
+    font-size:30px;
 }
 
-#menu-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.3);
-    display: none;
-    z-index: 10;
+.room-details h3{
+
+    font-size:1.15rem;
+
+    margin-bottom:4px;
+
+    color:var(--text);
 }
 
-#menu-overlay.open {
-    display: block;
+.room-details p{
+
+    color:var(--muted);
+
+    font-size:.9rem;
 }
 
-@media (max-width: 600px) {
-    #main-content {
-        padding: 12px;
+.room-arrow{
+
+    font-size:26px;
+
+    color:var(--primary);
+
+    transition:.25s;
+}
+
+.room-card:hover .room-arrow{
+
+    transform:translateX(6px);
+}
+
+#empty-state{
+
+    margin-top:80px;
+
+    text-align:center;
+}
+
+.empty-icon{
+
+    font-size:80px;
+
+    margin-bottom:20px;
+}
+
+#empty-state h3{
+
+    color:var(--primary);
+
+    margin-bottom:10px;
+}
+
+#empty-state p{
+
+    color:var(--muted);
+
+    max-width:420px;
+
+    margin:auto;
+
+    line-height:1.6;
+}
+
+.hidden{
+
+    display:none;
+}
+
+#add-button{
+
+    position:fixed;
+
+    right:28px;
+
+    bottom:28px;
+
+    width:64px;
+
+    height:64px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:var(--primary);
+
+    color:#fff;
+
+    font-size:34px;
+
+    cursor:pointer;
+
+    box-shadow:0 12px 25px rgba(111,90,138,.35);
+
+    transition:.25s;
+
+    z-index:20;
+}
+
+#add-button:hover{
+
+    transform:rotate(90deg) scale(1.08);
+}
+
+#add-menu{
+
+    position:fixed;
+
+    right:30px;
+
+    bottom:105px;
+
+    display:none;
+
+    flex-direction:column;
+
+    gap:10px;
+
+    background:#fff;
+
+    padding:15px;
+
+    border-radius:16px;
+
+    box-shadow:var(--shadow);
+
+    z-index:20;
+}
+
+#add-menu.open{
+
+    display:flex;
+}
+
+#add-menu a{
+
+    color:var(--text);
+
+    text-decoration:none;
+
+    padding:10px 15px;
+
+    border-radius:10px;
+
+    transition:.2s;
+}
+
+#add-menu a:hover{
+
+    background:#f3f3f3;
+}
+
+#side-menu{
+
+    position:fixed;
+
+    top:0;
+
+    left:0;
+
+    width:280px;
+
+    height:100vh;
+
+    background:#fff;
+
+    transform:translateX(-100%);
+
+    transition:.3s;
+
+    box-shadow:5px 0 25px rgba(0,0,0,.08);
+
+    z-index:30;
+}
+
+#side-menu.open{
+
+    transform:translateX(0);
+}
+
+.menu-header{
+
+    padding:35px 20px;
+
+    text-align:center;
+
+    border-bottom:1px solid #eee;
+}
+
+.user-avatar{
+
+    width:90px;
+
+    height:90px;
+
+    margin:auto;
+
+    border-radius:50%;
+
+    background:var(--primary);
+
+    color:#fff;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:45px;
+
+    margin-bottom:15px;
+}
+
+.menu-header h2{
+
+    color:var(--primary);
+}
+
+.menu-header span{
+
+    color:var(--muted);
+
+    font-size:.9rem;
+}
+
+.menu-items{
+
+    display:flex;
+
+    flex-direction:column;
+
+    padding:15px;
+}
+
+.menu-items a,
+.menu-items button{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:14px;
+
+    border:none;
+
+    background:none;
+
+    border-radius:12px;
+
+    text-decoration:none;
+
+    color:var(--text);
+
+    cursor:pointer;
+
+    font-size:1rem;
+
+    transition:.2s;
+}
+
+.menu-items a:hover,
+.menu-items button:hover{
+
+    background:#f2eef8;
+}
+
+#menu-overlay{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.35);
+
+    display:none;
+
+    z-index:25;
+}
+
+#menu-overlay.open{
+
+    display:block;
+}
+
+@media(max-width:768px){
+
+    #header-content{
+
+        padding:16px;
     }
-    #room-list {
-        max-width: 100%;
+
+    .header-text h1{
+
+        font-size:1.35rem;
     }
-    #add-button {
-        right: 16px;
-        bottom: 16px;
+
+    #room-list{
+
+        grid-template-columns:1fr;
     }
-    #add-menu {
-        right: 16px;
-        bottom: 76px;
-        max-width: calc(100vw - 32px);
+
+    #side-menu{
+
+        width:80%;
     }
-    #side-menu {
-        width: min(280px, 80vw);
+
+    #add-button{
+
+        width:58px;
+        height:58px;
+        font-size:30px;
     }
+
 }
