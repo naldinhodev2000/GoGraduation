@@ -1,104 +1,231 @@
 @import url('https://fonts.googleapis.com/css2?family=Sarala:wght@400;700&display=swap');
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: "Sarala", sans-serif;
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Sarala",sans-serif;
 }
 
-body {
-    min-height: 100vh;
-    background-color: #ffffff;
-    color: #000;
+:root{
+    --primary:#6F5A8A;
+    --secondary:#8A7FA3;
+    --background:#F7F8F9;
+    --surface:#FFFFFF;
+    --text:#2B2E34;
+    --muted:#7A7F87;
+    --danger:#d32f2f;
+    --shadow:0 8px 20px rgba(0,0,0,.08);
 }
 
-#header-content {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 16px 20px;
+body{
+    min-height:100vh;
+    background:linear-gradient(180deg,#f7f8f9 0%,#f2eef8 100%);
+    color:var(--text);
 }
 
-#back-link {
-    color: #000;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 600;
+/* ================= HEADER ================= */
+
+#header-content{
+
+    display:flex;
+    align-items:center;
+    gap:18px;
+
+    padding:18px 24px;
+
+    background:#fff;
+
+    box-shadow:0 2px 12px rgba(0,0,0,.05);
 }
 
-#header-content h1 {
-    font-size: 18px;
-    font-weight: 600;
+#back-link{
+
+    width:42px;
+    height:42px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    border-radius:12px;
+
+    background:var(--primary);
+
+    color:#fff;
+
+    text-decoration:none;
+
+    font-size:22px;
+
+    transition:.25s;
 }
 
-#main-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 40px 20px;
+#back-link:hover{
+
+    transform:scale(1.08);
 }
 
-#main-content h2 {
-    margin-bottom: 32px;
-    font-size: 20px;
-    font-weight: 600;
+#header-content h1{
+
+    color:var(--primary);
+
+    font-size:1.6rem;
 }
 
-#form-criar-sala {
-    display: flex;
-    flex-direction: column;
-    width: 320px;
-    max-width: 100%;
+/* ================= MAIN ================= */
+
+#main-content{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    padding:60px 20px;
 }
 
-#form-criar-sala label {
-    font-size: 14px;
-    margin-bottom: 6px;
+/* ================= CARD ================= */
+
+#form-criar-sala{
+
+    width:100%;
+    max-width:420px;
+
+    background:var(--surface);
+
+    padding:35px;
+
+    border-radius:20px;
+
+    box-shadow:var(--shadow);
 }
 
-.form-item {
-    height: 36px;
-    border: none;
-    border-radius: 8px;
-    padding: 0 12px;
-    margin-bottom: 16px;
-    background-color: #9fb1af;
-    outline: none;
-    color: #000;
-    width: 100%;
-    font-size: 16px;
+#main-content h2{
+
+    text-align:center;
+
+    color:var(--primary);
+
+    margin-bottom:30px;
+
+    font-size:2rem;
 }
 
-#form-error {
-    color: #b00020;
-    font-size: 13px;
-    margin-bottom: 12px;
+/* ================= FORM ================= */
+
+#form-criar-sala label{
+
+    display:block;
+
+    margin-bottom:8px;
+
+    font-weight:bold;
+
+    color:var(--text);
 }
 
-#button-criar {
-    width: 140px;
-    height: 40px;
-    border: none;
-    border-radius: 20px;
-    background-color: #e0e0e0;
-    font-weight: 600;
-    cursor: pointer;
-    color: #000;
-    align-self: center;
+.form-item{
+
+    width:100%;
+
+    height:48px;
+
+    padding:0 15px;
+
+    margin-bottom:18px;
+
+    border:1px solid #ddd;
+
+    border-radius:12px;
+
+    background:#fff;
+
+    font-size:15px;
+
+    transition:.25s;
 }
 
-.hidden {
-    display: none;
+.form-item:focus{
+
+    outline:none;
+
+    border-color:var(--secondary);
+
+    box-shadow:0 0 0 4px rgba(138,127,163,.20);
 }
 
-@media (max-width: 600px) {
-    #main-content {
-        padding: 24px 16px;
+/* ================= BOTÃO ================= */
+
+#button-criar{
+
+    width:100%;
+
+    height:48px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:var(--primary);
+
+    color:#fff;
+
+    font-size:16px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:.25s;
+}
+
+#button-criar:hover{
+
+    background:var(--secondary);
+
+    transform:translateY(-2px);
+}
+
+/* ================= ERRO ================= */
+
+#form-error{
+
+    color:var(--danger);
+
+    margin-bottom:15px;
+
+    font-size:.9rem;
+}
+
+.hidden{
+
+    display:none;
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:600px){
+
+    #header-content{
+
+        padding:16px;
     }
 
-    #form-criar-sala {
-        width: 100%;
-        max-width: 320px;
+    #header-content h1{
+
+        font-size:1.3rem;
     }
+
+    #main-content{
+
+        padding:30px 16px;
+    }
+
+    #form-criar-sala{
+
+        padding:25px;
+    }
+
 }
