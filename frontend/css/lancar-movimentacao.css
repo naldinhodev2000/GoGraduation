@@ -1,119 +1,349 @@
 @import url('https://fonts.googleapis.com/css2?family=Sarala:wght@400;700&display=swap');
 
+
 * {
+
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: "Sarala", sans-serif;
+
 }
 
+
+
 body {
+
     min-height: 100vh;
     background-color: #ffffff;
     color: #000;
+
 }
 
+
+
+/* ============================
+   HEADER
+============================ */
+
+
 #header-content {
+
     display: flex;
     align-items: center;
     gap: 16px;
-    padding: 16px 20px;
+
+    padding: 20px;
+
+    border-bottom: 1px solid #eeeeee;
+
 }
+
+
 
 #back-link {
-    color: #000;
+
     text-decoration: none;
-    font-size: 14px;
+
+    color: #000;
+
     font-weight: 600;
+
+    font-size: 15px;
+
 }
+
+
 
 #header-content h1 {
-    font-size: 18px;
-    font-weight: 600;
+
+    font-size: 20px;
+
+    font-weight: 700;
+
 }
+
+
+
+/* ============================
+   MAIN
+============================ */
+
 
 #main-content {
+
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 40px 20px;
+
+    justify-content: center;
+
+    padding: 30px 20px;
+
 }
+
+
+
+.form-card {
+
+    width: 100%;
+
+    max-width: 420px;
+
+    background-color: #ffffff;
+
+    border-radius: 18px;
+
+    padding: 25px;
+
+    border: 1px solid #eeeeee;
+
+    box-shadow:
+        0 5px 15px rgba(0,0,0,0.08);
+
+}
+
+
+
+.form-card h2 {
+
+    text-align: center;
+
+    margin-bottom: 25px;
+
+    font-size: 22px;
+
+}
+
+
+
+/* ============================
+   FORM
+============================ */
+
 
 #form-movimentacao {
+
     display: flex;
+
     flex-direction: column;
-    width: 100%;
-    max-width: 320px;
+
 }
+
+
 
 #form-movimentacao label {
+
     font-size: 14px;
-    margin-bottom: 6px;
-}
 
-.type-toggle {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 16px;
-}
-
-.type-option {
-    flex: 1;
-    height: 36px;
-    border: none;
-    border-radius: 8px;
-    background-color: #e0e0e0;
-    cursor: pointer;
     font-weight: 600;
-    color: #000;
+
+    margin-bottom: 7px;
+
 }
 
-.type-option.selected {
-    background-color: #9fb1af;
-}
+
 
 .form-item {
+
     width: 100%;
-    height: 40px;
+
+    height: 42px;
+
     border: none;
-    border-radius: 8px;
-    padding: 0 12px;
-    margin-bottom: 16px;
-    background-color: #9fb1af;
+
+    border-radius: 10px;
+
+    background-color: #e8eeee;
+
+    padding: 0 14px;
+
+    margin-bottom: 18px;
+
     outline: none;
-    color: #000;
-    font-size: 16px;
+
+    font-size: 15px;
+
 }
 
-select.form-item {
-    -webkit-appearance: none;
-    appearance: none;
+
+
+/* ============================
+   TIPO
+============================ */
+
+
+.type-toggle {
+
+    display: flex;
+
+    gap: 10px;
+
+    margin-bottom: 20px;
+
 }
 
-#form-error {
-    color: #b00020;
-    font-size: 13px;
-    margin-bottom: 12px;
+
+
+.type-option {
+
+    flex: 1;
+
+    height: 42px;
+
+    border-radius: 20px;
+
+    border: 1px solid #ddd;
+
+    background-color: #eeeeee;
+
+    cursor: pointer;
+
+    font-weight: bold;
+
+    transition: .2s;
+
 }
+
+
+
+/* Entrada */
+
+
+.type-option[data-type="ENTRADA"].selected {
+
+    background-color: #2e7d32;
+
+    color: white;
+
+    border-color: #2e7d32;
+
+}
+
+
+
+/* Saída */
+
+
+.type-option[data-type="SAIDA"].selected {
+
+    background-color: #c62828;
+
+    color: white;
+
+    border-color: #c62828;
+
+}
+
+
+
+/* ============================
+   BOTÃO
+============================ */
+
 
 #button-lancar {
-    width: 140px;
-    height: 40px;
+
+    height: 45px;
+
     border: none;
-    border-radius: 20px;
-    background-color: #e0e0e0;
-    font-weight: 600;
+
+    border-radius: 22px;
+
+    background-color: #6f5a8a;
+
+    color: white;
+
+    font-weight: bold;
+
+    font-size: 15px;
+
     cursor: pointer;
-    color: #000;
-    align-self: center;
+
+    margin-top: 10px;
+
 }
+
+
+
+#button-lancar:hover {
+
+    opacity: .9;
+
+}
+
+
+
+#button-lancar:disabled {
+
+    opacity: .6;
+
+    cursor: not-allowed;
+
+}
+
+
+
+/* ============================
+   ERRO
+============================ */
+
+
+#form-error {
+
+    color: #b00020;
+
+    background-color: #ffe5e5;
+
+    border-radius: 8px;
+
+    padding: 10px;
+
+    font-size: 13px;
+
+    margin-bottom: 15px;
+
+}
+
+
 
 .hidden {
+
     display: none;
+
 }
 
-@media (max-width: 600px) {
+
+
+/* ============================
+   MOBILE
+============================ */
+
+
+@media(max-width:600px){
+
+
     #main-content {
-        padding: 24px 16px;
+
+        padding: 20px 15px;
+
     }
+
+
+
+    .form-card {
+
+        padding: 20px;
+
+        border-radius: 14px;
+
+    }
+
+
+
+    #header-content h1 {
+
+        font-size: 18px;
+
+    }
+
+
 }

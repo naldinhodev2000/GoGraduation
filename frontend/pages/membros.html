@@ -1,232 +1,97 @@
 <!DOCTYPE html>
-<html lang="pt-br">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Bora Formar - Membros</title>
-        <link rel="stylesheet" href="../css/membros.css">
-    </head>
-    <body>
-        <header id="header-content">
-            <a id="back-link" href="#">‹ Voltar</a>
-            <h1>Membros</h1>
-        </header>
-        <main id="main-content">
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Bora Formar - Membros</title>
+
+    <link rel="stylesheet" href="../css/membros.css">
+</head>
+
+<body>
+
+    <header id="header-content">
+
+        <a id="back-link" href="#">
+            ← Voltar
+        </a>
+
+        <h1>Membros da Sala</h1>
+
+    </header>
+
+    <main id="main-content">
+
+        <section id="members-section">
+
             <ul id="member-list"></ul>
-            <p id="empty-state" class="hidden">Nenhum membro encontrado.</p>
+
+            <p id="empty-state" class="hidden">
+                Nenhum membro encontrado.
+            </p>
+
             <p id="error-message" class="hidden"></p>
-        </main>
 
-        <script type="module">
-            import groupService from "../js/services/groupService.js";
-            import groupMemberService from "../js/services/groupMemberService.js";
-            import memberSummaryService from "../js/services/memberSummaryService.js";
-            import subscriptionPaymentService from "../js/services/subscriptionPaymentService.js";
+        </section>
 
-            const params = new URLSearchParams(window.location.search);
-            const groupId = params.get("id");
+    </main>
 
-            const memberList = document.getElementById("member-list");
-            const emptyState = document.getElementById("empty-state");
-            const errorMessage = document.getElementById("error-message");
-            const backLink = document.getElementById("back-link");
+    <template id="member-template">
 
-            let isAdmin = false;
+        <li class="member-card">
 
-            if (!groupId) {
-                window.location.href = "salas.html";
-            }
-            backLink.href = `sala.html?id=${groupId}`;
+            <div class="member-header">
 
-            function statusLabel(summary) {
-                if (summary.overdue) {
-                    return "Atrasado";
-                }
-                if (summary.subscriptionStatus === "ACTIVE") {
-                    return "Em dia";
-                }
-                if (!summary.subscriptionStatus) {
-                    return "Sem mensalidade";
-                }
-                return summary.subscriptionStatus;
-            }
+                <div>
 
-            function buildPaymentForm(summary) {
-                if (!summary.subscriptionId || !summary.overdue) {
-                    return "";
-                }
+                    <h3 class="member-name"></h3>
 
-                return `
-                    <details class="payment-form">
-                        <summary>Registrar pagamento</summary>
-                        <label>Valor pago</label>
-                        <input type="number" step="0.01" class="pay-value" />
-                        <label>Mês de referência</label>
-                        <input type="month" class="pay-reference" />
-                        <label>Comprovante (print)</label>
-                        <input type="file" accept="image/*" class="pay-proof" />
-                        <label>Observação</label>
-                        <textarea class="pay-note" rows="2" placeholder="Ex: pago via Pix dia 05"></textarea>
-                        <button class="pay-button" type="button">Confirmar pagamento</button>
-                        <p class="pay-error hidden"></p>
-                    </details>
-                `;
-            }
+                    <span class="member-role"></span>
 
-            function buildAdminControls(summary) {
-                if (!isAdmin) {
-                    return "";
-                }
+                </div>
 
-                if (summary.role === "ADMIN") {
-                    return `<button class="role-button" data-action="demote">Remover admin</button>`;
-                }
+            </div>
 
-                return `<button class="role-button" data-action="promote">Tornar admin</button>`;
-            }
+            <div class="member-summary">
 
-            function attachPaymentHandler(item, summary) {
-                const button = item.querySelector(".pay-button");
-                if (!button) {
-                    return;
-                }
+                <div class="member-row">
 
-                button.addEventListener("click", async () => {
-                    const valueInput = item.querySelector(".pay-value");
-                    const referenceInput = item.querySelector(".pay-reference");
-                    const proofInput = item.querySelector(".pay-proof");
-                    const noteInput = item.querySelector(".pay-note");
-                    const payError = item.querySelector(".pay-error");
+                    <span>Status</span>
 
-                    payError.classList.add("hidden");
+                    <span class="member-status"></span>
 
-                    const value = valueInput.value;
-                    const reference = referenceInput.value;
+                </div>
 
-                    if (!value || !reference) {
-                        payError.textContent = "Preencha o valor e o mês de referência.";
-                        payError.classList.remove("hidden");
-                        return;
-                    }
+                <div class="member-row">
 
-                    button.disabled = true;
-                    button.textContent = "Enviando...";
+                    <span>Rifas vendidas</span>
 
-                    try {
-                        let proofImage = null;
-                        if (proofInput.files && proofInput.files[0]) {
-                            proofImage = await subscriptionPaymentService.fileToBase64(proofInput.files[0]);
-                        }
+                    <span class="member-raffles"></span>
 
-                        await subscriptionPaymentService.create(summary.subscriptionId, {
-                            value,
-                            date: new Date().toISOString(),
-                            reference: `${reference}-01`,
-                            proofImage,
-                            note: noteInput.value || null
-                        });
+                </div>
 
-                        window.location.reload();
-                    } catch (error) {
-                        payError.textContent = error.message;
-                        payError.classList.remove("hidden");
-                        button.disabled = false;
-                        button.textContent = "Confirmar pagamento";
-                    }
-                });
-            }
+                <div class="member-row">
 
-            function attachRoleHandler(item, member) {
-                const button = item.querySelector(".role-button");
-                if (!button) {
-                    return;
-                }
+                    <span>Valor devido</span>
 
-                button.addEventListener("click", async () => {
-                    const action = button.dataset.action;
-                    const newRole = action === "promote" ? "ADMIN" : "MEMBER";
+                    <span class="member-debt"></span>
 
-                    button.disabled = true;
+                </div>
 
-                    try {
-                        await groupMemberService.changeRole(groupId, member.userId, newRole);
-                        window.location.reload();
-                    } catch (error) {
-                        alert(error.message);
-                        button.disabled = false;
-                    }
-                });
-            }
+            </div>
 
-            async function loadMembers() {
-                try {
-                    const members = await groupMemberService.getDetailed(groupId);
+            <div class="payment-container"></div>
 
-                    try {
-                        const myRole = await groupService.getMyRole(groupId);
-                        isAdmin = myRole === "ADMIN";
-                    } catch (error) {
-                        isAdmin = false;
-                    }
+            <div class="admin-actions"></div>
 
-                    if (!members || members.length === 0) {
-                        emptyState.classList.remove("hidden");
-                        return;
-                    }
+        </li>
 
-                    for (const member of members) {
-                        const item = document.createElement("li");
-                        item.className = "member-card";
+    </template>
 
-                        let summaryHtml = "";
-                        let summary = null;
+    <script type="module" src="../js/membros.js"></script>
 
-                        try {
-                            summary = await memberSummaryService.getSummary(groupId, member.userId);
-                            summary.role = member.role;
+</body>
 
-                            summaryHtml = `
-                                <div class="member-row">
-                                    <span>Status:</span>
-                                    <span class="${summary.overdue ? 'status-late' : 'status-ok'}">${statusLabel(summary)}</span>
-                                </div>
-                                <div class="member-row">
-                                    <span>Rifas vendidas:</span>
-                                    <span>${summary.rafflesSold}</span>
-                                </div>
-                                <div class="member-row">
-                                    <span>Valor devido (rifa):</span>
-                                    <span>R$ ${Number(summary.raffleAmountDue).toFixed(2)}</span>
-                                </div>
-                                ${buildPaymentForm(summary)}
-                            `;
-                        } catch (error) {
-                            summaryHtml = `<div class="member-row">Não foi possível carregar o resumo financeiro.</div>`;
-                        }
-
-                        item.innerHTML = `
-                            <div class="member-name-row">
-                                <span class="member-name">${member.name}</span>
-                                <span class="member-role">${member.role === "ADMIN" ? "Admin" : "Membro"}</span>
-                            </div>
-                            ${summaryHtml}
-                            ${buildAdminControls(member)}
-                        `;
-
-                        if (summary) {
-                            attachPaymentHandler(item, summary);
-                        }
-                        attachRoleHandler(item, member);
-
-                        memberList.appendChild(item);
-                    }
-                } catch (error) {
-                    errorMessage.textContent = error.message || "Não foi possível carregar os membros.";
-                    errorMessage.classList.remove("hidden");
-                }
-            }
-
-            loadMembers();
-        </script>
-    </body>
 </html>

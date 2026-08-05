@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Sarala:wght@400;700&display=swap');
 
+
 * {
     margin: 0;
     padding: 0;
@@ -7,160 +8,458 @@
     font-family: "Sarala", sans-serif;
 }
 
+
 body {
+
     min-height: 100vh;
     background-color: #ffffff;
     color: #000;
+
 }
 
+
+/* ============================
+   HEADER
+============================ */
+
+
 #header-content {
+
     display: flex;
     align-items: center;
     gap: 16px;
-    padding: 16px 20px;
+
+    padding: 20px;
+
+    border-bottom: 1px solid #eeeeee;
+
 }
+
 
 #back-link {
-    color: #000;
+
     text-decoration: none;
-    font-size: 14px;
+
+    color: #000;
+
+    font-size: 15px;
+
     font-weight: 600;
+
 }
+
 
 #header-content h1 {
-    font-size: 18px;
-    font-weight: 600;
+
+    font-size: 20px;
+
+    font-weight: 700;
+
 }
+
+
+
+/* ============================
+   MAIN
+============================ */
+
 
 #main-content {
-    padding: 20px;
+
+    padding: 24px;
+
 }
+
 
 #member-list {
+
     list-style: none;
+
     display: flex;
+
     flex-direction: column;
-    gap: 12px;
-    max-width: 400px;
+
+    gap: 16px;
+
+    max-width: 500px;
+
+    margin: auto;
+
 }
+
+
+
+/* ============================
+   CARD MEMBRO
+============================ */
+
 
 .member-card {
-    background-color: #9fb1af;
-    border-radius: 8px;
-    padding: 12px;
+
+    background-color: #ffffff;
+
+    border-radius: 16px;
+
+    padding: 18px;
+
+    border: 1px solid #e6e6e6;
+
+    box-shadow:
+        0 3px 10px rgba(0,0,0,0.06);
+
 }
 
-.member-name-row {
+
+
+/* ============================
+   CABEÇALHO DO CARD
+============================ */
+
+
+.member-header {
+
     display: flex;
-    flex-wrap: wrap;
+
     justify-content: space-between;
+
     align-items: center;
-    gap: 6px 10px;
-    margin-bottom: 8px;
+
+    margin-bottom: 16px;
+
 }
+
 
 .member-name {
+
+    font-size: 18px;
+
     font-weight: 700;
-    word-break: break-word;
+
 }
+
 
 .member-role {
-    font-size: 11px;
-    background-color: #ffffff;
-    border-radius: 10px;
-    padding: 2px 8px;
-    font-weight: 600;
+
+    display: inline-block;
+
+    margin-top: 4px;
+
+    font-size: 13px;
+
+    color: #777;
+
 }
+
+
+
+/* ============================
+   RESUMO
+============================ */
+
+
+.member-summary {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+
+}
+
+
 
 .member-row {
+
     display: flex;
+
     justify-content: space-between;
-    font-size: 13px;
-    margin-bottom: 4px;
+
+    align-items: center;
+
+    font-size: 14px;
+
+    padding: 8px 0;
+
+    border-bottom: 1px solid #eeeeee;
+
 }
+
+
+
+.member-row span:first-child {
+
+    color: #555;
+
+}
+
+
+
+/* ============================
+   STATUS
+============================ */
+
 
 .status-ok {
-    color: #1b5e20;
-    font-weight: 600;
+
+    color: #2e7d32;
+
+    font-weight: bold;
+
 }
+
+
 
 .status-late {
-    color: #b00020;
-    font-weight: 600;
+
+    color: #c62828;
+
+    font-weight: bold;
+
 }
+
+
+
+/* ============================
+   PAGAMENTO
+============================ */
+
 
 .payment-form {
-    margin-top: 10px;
-    background-color: #ffffff;
-    border-radius: 6px;
-    padding: 8px;
+
+    margin-top: 18px;
+
+    padding: 14px;
+
+    background-color: #f7f7f7;
+
+    border-radius: 12px;
+
 }
+
+
 
 .payment-form summary {
+
     cursor: pointer;
-    font-weight: 600;
-    font-size: 13px;
+
+    font-weight: bold;
+
+    margin-bottom: 12px;
+
 }
+
+
 
 .payment-form label {
+
     display: block;
-    font-size: 12px;
-    margin-top: 8px;
-    margin-bottom: 2px;
-}
 
-.payment-form input, .payment-form textarea {
-    width: 100%;
-    border: 1px solid #9fb1af;
-    border-radius: 6px;
-    padding: 8px;
-    font-size: 16px;
-    font-family: inherit;
-}
+    font-size: 13px;
 
-.payment-form button {
     margin-top: 10px;
-    width: 100%;
-    height: 32px;
-    border: none;
-    border-radius: 16px;
-    background-color: #e0e0e0;
-    font-weight: 600;
-    cursor: pointer;
+
+    margin-bottom: 5px;
+
 }
+
+
+
+.payment-form input,
+.payment-form textarea {
+
+
+    width: 100%;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background-color: #e8eeee;
+
+    padding: 10px;
+
+    outline: none;
+
+    font-size: 14px;
+
+}
+
+
+
+.payment-form textarea {
+
+    resize: none;
+
+}
+
+
+
+.pay-button {
+
+
+    width: 100%;
+
+    height: 38px;
+
+    margin-top: 14px;
+
+    border: none;
+
+    border-radius: 20px;
+
+    background-color: #6f5a8a;
+
+    color: white;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+}
+
+
+
+.pay-button:hover {
+
+    opacity: 0.9;
+
+}
+
+
+
+.pay-button:disabled {
+
+    opacity: 0.6;
+
+    cursor: not-allowed;
+
+}
+
+
 
 .pay-error {
+
     color: #b00020;
-    font-size: 12px;
-    margin-top: 6px;
+
+    font-size: 13px;
+
+    margin-top: 10px;
+
 }
+
+
+
+/* ============================
+   ADMIN
+============================ */
+
+
+.admin-actions {
+
+    margin-top: 15px;
+
+}
+
+
 
 .role-button {
-    margin-top: 10px;
+
+
     width: 100%;
-    height: 32px;
-    border: none;
-    border-radius: 16px;
-    background-color: #e0e0e0;
-    font-weight: 600;
+
+    height: 36px;
+
+    border-radius: 18px;
+
+    border: 1px solid #6f5a8a;
+
+    background: transparent;
+
+    color: #6f5a8a;
+
+    font-weight: bold;
+
     cursor: pointer;
+
+
 }
 
-#empty-state, #error-message {
-    color: #555;
-    font-size: 14px;
+
+.role-button:hover {
+
+
+    background-color: #6f5a8a;
+
+    color: white;
+
+
 }
+
+
+
+/* ============================
+   ESTADOS
+============================ */
+
+
+#error-message {
+
+    color: #b00020;
+
+    text-align: center;
+
+    margin-top: 20px;
+
+}
+
+
+
+#empty-state {
+
+    text-align: center;
+
+    color: #777;
+
+}
+
+
 
 .hidden {
+
     display: none;
+
 }
 
-@media (max-width: 480px) {
+
+
+/* ============================
+   MOBILE
+============================ */
+
+
+@media(max-width:600px){
+
+
     #main-content {
-        padding: 12px;
+
+        padding: 16px;
+
     }
 
-    #member-list {
-        max-width: 100%;
+
+    .member-card {
+
+        padding: 15px;
+
     }
+
+
+    .member-row {
+
+        font-size: 13px;
+
+    }
+
+
 }
