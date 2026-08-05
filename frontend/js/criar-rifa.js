@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Sarala:wght@400;700&display=swap');
 
+
 * {
     margin: 0;
     padding: 0;
@@ -9,26 +10,31 @@
 
 
 body {
+
     min-height: 100vh;
+
     background-color: #ffffff;
+
     color: #000;
+
 }
 
 
-button,
-input {
-    font-family: inherit;
-}
 
+/* ============================
+   HEADER
+============================ */
 
-/* HEADER */
 
 #header-content {
 
     display: flex;
+
     align-items: center;
+
     gap: 16px;
-    padding: 20px;
+
+    padding: 16px 20px;
 
 }
 
@@ -36,9 +42,12 @@ input {
 #back-link {
 
     text-decoration: none;
+
     color: #000;
+
     font-size: 15px;
-    font-weight: bold;
+
+    font-weight: 600;
 
 }
 
@@ -47,58 +56,71 @@ input {
 
     font-size: 20px;
 
+    font-weight: 700;
+
 }
 
 
 
-/* MAIN */
+/* ============================
+   CONTEÚDO
+============================ */
+
 
 #main-content {
 
     display: flex;
+
     justify-content: center;
-    padding: 30px 20px;
+
+    padding: 40px 20px;
 
 }
 
 
-#form-rifa {
+
+.card {
 
     width: 100%;
+
     max-width: 360px;
 
+    background: #ffffff;
+
+}
+
+
+
+.card h2 {
+
+    text-align: center;
+
+    font-size: 22px;
+
+    margin-bottom: 32px;
+
+}
+
+
+
+/* ============================
+   FORMULÁRIO
+============================ */
+
+
+#form-rifa {
+
     display: flex;
+
     flex-direction: column;
 
 }
 
 
 
-/* TITULO */
-
-#form-rifa::before {
-
-    content: "Nova Rifa";
-
-    text-align: center;
-
-    font-size: 22px;
-
-    font-weight: bold;
-
-    margin-bottom: 30px;
-
-}
-
-
-
-/* CAMPOS */
-
 #form-rifa label {
 
     font-size: 14px;
-
-    font-weight: bold;
 
     margin-bottom: 6px;
 
@@ -108,27 +130,42 @@ input {
 
 .form-item {
 
+    width: 100%;
+
     height: 42px;
 
     border: none;
 
     border-radius: 10px;
 
-    background-color: #e5eeee;
+    background-color: #9fb1af;
 
     padding: 0 12px;
 
     margin-bottom: 18px;
 
-    outline: none;
+    font-size: 16px;
 
-    font-size: 15px;
+    color: #000;
+
+    outline: none;
 
 }
 
 
 
-/* ERRO */
+.form-item::placeholder {
+
+    color: #333;
+
+}
+
+
+
+/* ============================
+   ERRO
+============================ */
+
 
 #form-error {
 
@@ -141,6 +178,7 @@ input {
 }
 
 
+
 .hidden {
 
     display: none;
@@ -149,23 +187,30 @@ input {
 
 
 
-/* BOTÃO */
+/* ============================
+   BOTÃO
+============================ */
+
 
 #button-criar {
 
-    height: 44px;
+    height: 42px;
 
     border: none;
 
     border-radius: 22px;
 
-    background-color: #6F5A8A;
+    background-color: #e0e0e0;
 
-    color: white;
+    color: #000;
 
-    font-weight: bold;
+    font-size: 15px;
+
+    font-weight: 700;
 
     cursor: pointer;
+
+    transition: 0.2s;
 
 }
 
@@ -173,27 +218,42 @@ input {
 
 #button-criar:hover {
 
-    opacity: .9;
+    background-color: #d0d0d0;
 
 }
+
 
 
 #button-criar:disabled {
 
-    opacity: .6;
+    opacity: 0.6;
+
+    cursor: not-allowed;
 
 }
 
 
 
-/* MOBILE */
+/* ============================
+   MOBILE
+============================ */
+
 
 @media(max-width:600px){
 
+
     #main-content {
 
-        padding: 25px 16px;
+        padding: 30px 16px;
 
     }
+
+
+    .card {
+
+        max-width: 100%;
+
+    }
+
 
 }

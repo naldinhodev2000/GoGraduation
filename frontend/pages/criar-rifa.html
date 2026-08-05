@@ -1,59 +1,110 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Bora Formar - Criar Rifa</title>
-        <link rel="stylesheet" href="../css/criar-rifa.css">
-    </head>
-    <body>
-        <header id="header-content">
-            <a id="back-link" href="#">‹ Voltar</a>
-            <h1>Criar Rifa</h1>
-        </header>
-        <main id="main-content">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Bora Formar - Criar Rifa</title>
+
+    <link rel="stylesheet" href="../css/criar-rifa.css">
+</head>
+
+<body>
+
+    <header id="header-content">
+
+        <a id="back-link" href="#">
+            ‹ Voltar
+        </a>
+
+        <h1>
+            Criar Rifa
+        </h1>
+
+    </header>
+
+
+    <main id="main-content">
+
+
+        <section class="card">
+
+            <h2>
+                Nova Rifa
+            </h2>
+
+
             <form id="form-rifa">
-                <label>Nome:</label>
-                <input id="name" class="form-item" type="text" required>
-                <label>Valor do número:</label>
-                <input id="value" class="form-item" type="number" step="0.01" required>
+
+
+                <label for="name">
+                    Nome da rifa
+                </label>
+
+                <input 
+                    id="name"
+                    class="form-item"
+                    type="text"
+                    placeholder="Ex: Rifa de uma cesta"
+                    required
+                >
+
+
+
+                <label for="value">
+                    Valor do número
+                </label>
+
+                <input
+                    id="value"
+                    class="form-item"
+                    type="number"
+                    step="0.01"
+                    placeholder="Ex: 10.00"
+                    required
+                >
+
+
+
+                <label for="total">
+                    Quantidade de números
+                </label>
+
+                <input
+                    id="total"
+                    class="form-item"
+                    type="number"
+                    placeholder="Ex: 200"
+                >
+
+
 
                 <p id="form-error" class="hidden"></p>
 
-                <input id="button-criar" type="submit" value="Criar">
+
+
+                <button 
+                    id="button-criar"
+                    type="submit">
+
+                    Criar Rifa
+
+                </button>
+
+
             </form>
-        </main>
 
-        <script type="module">
-            import raffleService from "../js/services/raffleService.js";
 
-            const params = new URLSearchParams(window.location.search);
-            const groupId = params.get("id");
+        </section>
 
-            const form = document.getElementById("form-rifa");
-            const errorMessage = document.getElementById("form-error");
-            const backLink = document.getElementById("back-link");
 
-            if (!groupId) {
-                window.location.href = "salas.html";
-            }
-            backLink.href = `sala.html?id=${groupId}`;
+    </main>
 
-            form.addEventListener("submit", async (event) => {
-                event.preventDefault();
-                errorMessage.classList.add("hidden");
 
-                const name = document.getElementById("name").value;
-                const value = document.getElementById("value").value;
 
-                try {
-                    await raffleService.create({ groupId, name, value, total: null });
-                    window.location.href = `sala.html?id=${groupId}`;
-                } catch (error) {
-                    errorMessage.textContent = error.message || "Não foi possível criar a rifa.";
-                    errorMessage.classList.remove("hidden");
-                }
-            });
-        </script>
-    </body>
+    <script type="module" src="../js/criar-rifa.js"></script>
+
+</body>
+
 </html>
