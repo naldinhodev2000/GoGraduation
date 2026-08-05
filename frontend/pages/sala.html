@@ -1,168 +1,291 @@
 <!DOCTYPE html>
-<html lang="pt-br">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Bora Formar - Sala</title>
-        <link rel="stylesheet" href="../css/sala.css">
-    </head>
-    <body>
-        <header id="header-content">
-            <button id="menu-toggle" aria-label="Menu">☰</button>
-            <a id="back-link" href="salas.html">‹ Salas</a>
-            <div id="goal-info">
-                <span id="goal-label">Meta</span>
-                <span id="goal-value">--</span>
-            </div>
-            <div id="balance-info">
-                <span id="balance-label">Saldo</span>
-                <span id="balance-value">--</span>
-            </div>
-        </header>
+<html lang="pt-BR">
 
-        <div id="group-info">
-            <span id="group-name">--</span>
-            <div id="group-token-row">
-                <span>Código da turma:</span>
-                <span id="group-token">--</span>
-                <button id="copy-token-button" aria-label="Copiar código">Copiar</button>
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Bora Formar - Sala</title>
+
+    <link rel="stylesheet" href="../css/sala.css">
+
+</head>
+
+<body>
+
+    <!-- MENU LATERAL -->
+
+    <nav id="side-menu">
+
+        <div class="menu-header">
+
+            <div class="avatar">
+                🎓
             </div>
+
+            <h2>Bora Formar</h2>
+
+            <span>Gestão da Comissão</span>
+
         </div>
 
-        <main id="main-content">
-            <button id="link-membros" class="action-button">Membros</button>
-            <button id="link-lancar" class="action-button">Lançar movimentação</button>
-            <button id="link-mensalidade" class="action-button">Mensalidade</button>
-            <button id="link-rifa" class="action-button">Criar Rifa</button>
+        <div class="menu-items">
 
+            <a href="salas.html">
+                🏠
+                <span>Minhas Salas</span>
+            </a>
 
-            <section id="raffle-section">
-                <h2>Rifas</h2>
-                <ul id="raffle-list"></ul>
-                <p id="raffle-empty" class="hidden">Nenhuma rifa criada ainda.</p>
-            </section>
+            <button id="logout-button">
+                🚪
+                <span>Sair</span>
+            </button>
 
-            <p id="error-message" class="hidden"></p>
-        </main>
+        </div>
 
-        <nav id="side-menu">
-            <a href="salas.html">Início</a>
-            <button id="logout-button">Sair</button>
-        </nav>
-        <div id="menu-overlay"></div>
+    </nav>
 
-        <script type="module">
-            import cashService from "../js/services/cashService.js";
-            import authService from "../js/services/authService.js";
-            import userService from "../js/services/userService.js";
-            import raffleService from "../js/services/raffleService.js";
+    <div id="menu-overlay"></div>
 
-            if (!authService.isAuthenticated()) {
-                window.location.href = "login.html";
-            }
+    <!-- HEADER -->
 
-            const params = new URLSearchParams(window.location.search);
-            const groupId = params.get("id");
+    <header id="header-content">
 
-            if (!groupId) {
-                window.location.href = "salas.html";
-            }
+        <button id="menu-toggle">
+            ☰
+        </button>
 
-            const goalValue = document.getElementById("goal-value");
-            const balanceValue = document.getElementById("balance-value");
-            const errorMessage = document.getElementById("error-message");
-            const menuToggle = document.getElementById("menu-toggle");
-            const sideMenu = document.getElementById("side-menu");
-            const menuOverlay = document.getElementById("menu-overlay");
-            const logoutButton = document.getElementById("logout-button");
-            const groupName = document.getElementById("group-name");
-            const groupToken = document.getElementById("group-token");
-            const copyTokenButton = document.getElementById("copy-token-button");
-            const raffleList = document.getElementById("raffle-list");
-            const raffleEmpty = document.getElementById("raffle-empty");
+        <div class="header-title">
 
-            menuToggle.addEventListener("click", () => {
-                sideMenu.classList.toggle("open");
-                menuOverlay.classList.toggle("open");
-            });
-            menuOverlay.addEventListener("click", () => {
-                sideMenu.classList.remove("open");
-                menuOverlay.classList.remove("open");
-            });
-            logoutButton.addEventListener("click", () => {
-                authService.logout();
-                window.location.href = "login.html";
-            });
+            <h1 id="group-name">
+                Carregando...
+            </h1>
 
-            document.getElementById("link-membros").addEventListener("click", () => {
-            window.location.href = `membros.html?id=${groupId}`;
-            });
-            document.getElementById("link-lancar").addEventListener("click", () => {
-                window.location.href = `lancar-movimentacao.html?id=${groupId}`;
-            });
-            document.getElementById("link-mensalidade").addEventListener("click", () => {
-                window.location.href = `mensalidade.html?id=${groupId}`;
-            });
-            document.getElementById("link-rifa").addEventListener("click", () => {
-                window.location.href = `criar-rifa.html?id=${groupId}`;
-            });
+            <span>
+                Comissão de Formatura
+            </span>
 
-            copyTokenButton.addEventListener("click", () => {
-                navigator.clipboard.writeText(groupToken.textContent);
-                copyTokenButton.textContent = "Copiado!";
-                setTimeout(() => {
-                    copyTokenButton.textContent = "Copiar";
-                }, 1500);
-            });
+        </div>
 
-            async function loadDashboard() {
-                try {
-                    const goalInfo = await cashService.getRemainingToGoal(groupId);
-                    goalValue.textContent = `R$ ${Number(goalInfo.goal).toFixed(2)}`;
-                    balanceValue.textContent = `R$ ${Number(goalInfo.balance).toFixed(2)}`;
-                } catch (error) {
-                    errorMessage.textContent = error.message || "Não foi possível carregar os dados da sala.";
-                    errorMessage.classList.remove("hidden");
-                }
-            }
+        <a id="back-link" href="salas.html">
 
-            async function loadGroupInfo() {
-                try {
-                    const groups = await userService.getJoinedGroups();
-                    const group = groups.find((g) => g.id === groupId);
+            ← Salas
 
-                    if (group) {
-                        groupName.textContent = group.name;
-                        groupToken.textContent = group.token;
-                    }
-                } catch (error) {
-                    groupName.textContent = "Sala";
-                }
-            }
+        </a>
 
-            async function loadRaffles() {
-            try {
-                const groupRaffles = await raffleService.listByGroup(groupId);
+    </header>
 
-                if (!groupRaffles || groupRaffles.length === 0) {
-                    raffleEmpty.classList.remove("hidden");
-                    return;
-                }
+    <!-- CONTEÚDO -->
 
-                groupRaffles.forEach((raffle) => {
-                        const item = document.createElement("li");
-                        item.textContent = `${raffle.name} — R$ ${Number(raffle.value).toFixed(2)} por número`;
-                        raffleList.appendChild(item);
-                    });
-                } catch (error) {
-                    raffleEmpty.textContent = "Não foi possível carregar as rifas.";
-                    raffleEmpty.classList.remove("hidden");
-                }
-            }
+    <main id="main-content">
 
-            loadDashboard();
-            loadGroupInfo();
-            loadRaffles();
-        </script>
-    </body>
+        <!-- DASHBOARD -->
+
+        <section class="dashboard">
+
+            <div class="info-card">
+
+                <span class="card-icon">
+                    🎯
+                </span>
+
+                <span class="card-title">
+                    Meta
+                </span>
+
+                <strong id="goal-value">
+
+                    R$ 0,00
+
+                </strong>
+
+            </div>
+
+            <div class="info-card">
+
+                <span class="card-icon">
+                    💰
+                </span>
+
+                <span class="card-title">
+                    Saldo Atual
+                </span>
+
+                <strong id="balance-value">
+
+                    R$ 0,00
+
+                </strong>
+
+            </div>
+
+        </section>
+
+        <!-- TOKEN -->
+
+        <section class="token-card">
+
+            <div>
+
+                <h3>
+
+                    Código da Sala
+
+                </h3>
+
+                <strong id="group-token">
+
+                    --------
+
+                </strong>
+
+            </div>
+
+            <button id="copy-token-button">
+
+                📋 Copiar
+
+            </button>
+
+        </section>
+
+        <!-- AÇÕES -->
+
+        <section class="actions">
+
+            <button id="link-membros" class="action-button">
+
+                <span class="action-icon">
+                    👥
+                </span>
+
+                <span>
+                    Membros
+                </span>
+
+            </button>
+
+            <button id="link-lancar" class="action-button">
+
+                <span class="action-icon">
+                    💸
+                </span>
+
+                <span>
+                    Lançar
+                </span>
+
+            </button>
+
+            <button id="link-mensalidade" class="action-button">
+
+                <span class="action-icon">
+                    📅
+                </span>
+
+                <span>
+                    Mensalidade
+                </span>
+
+            </button>
+
+            <button id="link-rifa" class="action-button">
+
+                <span class="action-icon">
+                    🎟️
+                </span>
+
+                <span>
+                    Rifas
+                </span>
+
+            </button>
+
+        </section>
+
+        <!-- RIFAS -->
+
+        <section id="raffle-section">
+
+            <div class="section-header">
+
+                <h2>
+
+                    Rifas
+
+                </h2>
+
+                <span>
+
+                    Ativas
+
+                </span>
+
+            </div>
+
+            <ul id="raffle-list">
+
+            </ul>
+
+            <div id="raffle-empty" class="hidden">
+
+                <div class="empty-icon">
+
+                    🎟️
+
+                </div>
+
+                <h3>
+
+                    Nenhuma rifa cadastrada
+
+                </h3>
+
+                <p>
+
+                    Crie sua primeira rifa para arrecadar fundos para a turma.
+
+                </p>
+
+            </div>
+
+        </section>
+
+        <p id="error-message" class="hidden"></p>
+
+    </main>
+
+    <!-- TEMPLATE DE CARD DE RIFA -->
+
+    <template id="raffle-template">
+
+        <li class="raffle-card">
+
+            <div class="raffle-info">
+
+                <h3 class="raffle-name">
+
+                </h3>
+
+                <p class="raffle-price">
+
+                </p>
+
+            </div>
+
+            <span class="raffle-arrow">
+
+                →
+
+            </span>
+
+        </li>
+
+    </template>
+
+    <script type="module" src="../js/sala.js"></script>
+
+</body>
+
 </html>
