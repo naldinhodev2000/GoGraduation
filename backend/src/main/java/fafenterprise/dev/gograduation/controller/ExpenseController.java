@@ -16,33 +16,38 @@ import fafenterprise.dev.gograduation.dto.response.ExpenseResponseDTO;
 import fafenterprise.dev.gograduation.services.ExpenseService;
 import org.springframework.web.bind.annotation.RequestBody;
 import lombok.RequiredArgsConstructor;
-
-
 @RestController
-@RequestMapping("/expends")
+@RequestMapping("/expenses")
 @RequiredArgsConstructor
-public class ExpendsController{
-    final ExpenseService expenseService;
-    
+public class ExpenseController {
+
+    private final ExpenseService expenseService;
+
     @PostMapping
-    public ExpenseResponseDTO create(@RequestBody ExpenseRequestDTO expenseRequestDTO){
+    public ExpenseResponseDTO create(@RequestBody ExpenseRequestDTO expenseRequestDTO) {
         return expenseService.create(expenseRequestDTO);
     }
 
-    @PutMapping("/{id}")
-    public ExpenseResponseDTO update(@PathVariable UUID id, @RequestBody ExpenseRequestDTO expense){
-        return expenseService.update(id, expense);
+    @GetMapping
+    public List<ExpenseResponseDTO> listAll() {
+        return expenseService.listAll();
     }
 
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable UUID id){
-        expenseService.delete(id);
-    }
-
-    @GetMapping("/{groupId}/expenses")
-    public List<ExpenseResponseDTO> listByGroupId(@PathVariable UUID groupId){
+    @GetMapping("/group/{groupId}")
+    public List<ExpenseResponseDTO> listByGroupId(@PathVariable UUID groupId) {
         return expenseService.listByGroupId(groupId);
     }
 
-    
+    @PutMapping("/{id}")
+    public ExpenseResponseDTO update(
+            @PathVariable UUID id,
+            @RequestBody ExpenseRequestDTO expenseRequestDTO) {
+
+        return expenseService.update(id, expenseRequestDTO);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable UUID id) {
+        expenseService.delete(id);
+    }
 }

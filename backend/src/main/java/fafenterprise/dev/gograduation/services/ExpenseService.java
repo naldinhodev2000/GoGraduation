@@ -16,20 +16,24 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class ExpenseService{
+public class ExpenseService {
 
     private final GroupUserRepository groupUserRepository;
-    final ExpenseRepository expenseRepository;
-    final GroupRepository groupRepository;
-    final JwtService jwtService;
+    private final ExpenseRepository expenseRepository;
+    private final GroupRepository groupRepository;
+    private final JwtService jwtService;
 
-    
+    public ExpenseResponseDTO create(ExpenseRequestDTO expenseRequestDTO) {
 
-    public ExpenseResponseDTO create(ExpenseRequestDTO expenseRequestDTO){
-        ExpenseEntity expense = new ExpenseEntity();
+        UUID userId = jwtService.getLoggedId();
+
+        if (!groupUserRepository.existsByUser_IdAndGroup_Id(userId, expenseRequestDTO.groupId())) {
+            throw new RuntimeException("User is not a member of the group");
+        }
+
         GroupEntity group = groupRepository.findById(expenseRequestDTO.groupId()).orElseThrow();
 
-
+        ExpenseEntity expense = new ExpenseEntity();
         expense.setDescription(expenseRequestDTO.description());
         expense.setValue(expenseRequestDTO.value());
         expense.setGroup(group);
@@ -37,18 +41,23 @@ public class ExpenseService{
         expenseRepository.save(expense);
 
         return new ExpenseResponseDTO(
-            expense.getId(),
-            expense.getGroup().getId(),
-            expense.getDescription(),
-            expense.getValue());
-
-
+                expense.getId(),
+                expense.getGroup().getId(),
+                expense.getDescription(),
+                expense.getValue());
     }
 
-    public ExpenseResponseDTO update(UUID id, ExpenseRequestDTO expenseRequestDTO){
+    public ExpenseResponseDTO update(UUID id, ExpenseRequestDTO expenseRequestDTO) {
+
+        UUID userId = jwtService.getLoggedId();
+
+        if (!groupUserRepository.existsByUser_IdAndGroup_Id(userId, expenseRequestDTO.groupId())) {
+            throw new RuntimeException("User is not a member of the group");
+        }
+
         ExpenseEntity expense = expenseRepository.findById(id).orElseThrow();
         GroupEntity group = groupRepository.findById(expenseRequestDTO.groupId()).orElseThrow();
-        
+
         expense.setDescription(expenseRequestDTO.description());
         expense.setGroup(group);
         expense.setValue(expenseRequestDTO.value());
@@ -56,45 +65,53 @@ public class ExpenseService{
         expenseRepository.save(expense);
 
         return new ExpenseResponseDTO(
-            expense.getId(),
-            expense.getGroup().getId(),  
-            expense.getDescription(), 
-            expense.getValue()
-        );
-
-
-
+                expense.getId(),
+                expense.getGroup().getId(),
+                expense.getDescription(),
+                expense.getValue());
     }
 
-
-    public List<ExpenseResponseDTO> listAll(){
-        return expenseRepository
-        .findAll().stream()
-        .map(expense -> new ExpenseResponseDTO(expense.getId(), expense.getGroup().getId(), expense.getDescription(), expense.getValue())).toList();
+    public List<ExpenseResponseDTO> listAll() {
+        return expenseRepository.findAll().stream()
+                .map(expense -> new ExpenseResponseDTO(
+                        expense.getId(),
+                        expense.getGroup().getId(),
+                        expense.getDescription(),
+                        expense.getValue()))
+                .toList();
     }
 
-    public void delete(UUID id){
+    public void delete(UUID id) {
 
-       ExpenseEntity entity =  expenseRepository.findById(id).orElseThrow();
-       expenseRepository.delete(entity);
+        UUID userId = jwtService.getLoggedId();
+
+        ExpenseEntity expense = expenseRepository.findById(id).orElseThrow();
+
+        if (!groupUserRepository.existsByUser_IdAndGroup_Id(
+                userId,
+                expense.getGroup().getId())) {
+
+            throw new RuntimeException("User is not a member of the group");
+        }
+
+        expenseRepository.delete(expense);
     }
 
     public List<ExpenseResponseDTO> listByGroupId(UUID groupId) {
 
-    UUID userId = jwtService.getLoggedId();
+        UUID userId = jwtService.getLoggedId();
 
-    if (!groupUserRepository.existsByUser_IdAndGroup_Id(userId, groupId)) {
-        throw new RuntimeException("User is not a member of the group");
+        if (!groupUserRepository.existsByUser_IdAndGroup_Id(userId, groupId)) {
+            throw new RuntimeException("User is not a member of the group");
+        }
+
+        return expenseRepository.findByGroup_Id(groupId)
+                .stream()
+                .map(expense -> new ExpenseResponseDTO(
+                        expense.getId(),
+                        expense.getGroup().getId(),
+                        expense.getDescription(),
+                        expense.getValue()))
+                .toList();
     }
-
-    return expenseRepository.findByGroup_Id(groupId)
-        .stream()
-        .map(expense -> new ExpenseResponseDTO(
-            expense.getId(),
-            expense.getGroup().getId(),
-            expense.getDescription(),
-            expense.getValue()
-        ))
-        .toList();
-}
 }
