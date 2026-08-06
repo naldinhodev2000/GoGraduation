@@ -2,13 +2,7 @@ package fafenterprise.dev.gograduation.controller;
 
 import java.util.UUID;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import fafenterprise.dev.gograduation.dto.RemainingToGoalDTO;
 import fafenterprise.dev.gograduation.dto.request.TransactionDTO;
@@ -29,30 +23,38 @@ public class CashController {
     public RemainingToGoalDTO getRemainingToGoal(
             @PathVariable UUID groupId) {
 
-        return cashService
-                .getRemainingToGoal(groupId);
+        return cashService.getRemainingToGoal(groupId);
     }
 
     @GetMapping("/{groupId}")
     public CashResponseDTO getCash(
             @PathVariable UUID groupId) {
 
-        return cashService
-                .getCash(groupId);
+        return cashService.getCash(groupId);
     }
 
-    @PostMapping
+    /**
+     * Adiciona uma transação ao caixa.
+     * Pode ser:
+     * - Entrada/Saída comum;
+     * - Relacionada a uma rifa;
+     * - Relacionada ao pagamento de uma mensalidade.
+     */
+    @PostMapping("/transactions")
     public TransactionDTO addTransaction(
-            @RequestBody TransactionDTO transaction) {
+            @RequestBody TransactionDTO transactionDTO) {
 
-        return transactionService
-                .addTransaction(transaction);
+        return transactionService.addTransaction(transactionDTO);
     }
 
+    /**
+     * Remove uma transação.
+     */
     @DeleteMapping("/transactions/{id}")
     public void deleteTransaction(
             @PathVariable UUID id) {
 
         transactionService.remove(id);
     }
+
 }

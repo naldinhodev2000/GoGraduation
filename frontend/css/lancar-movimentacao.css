@@ -347,3 +347,82 @@ body {
 
 
 }
+
+
+/* ============================
+   ORIGEM DA MOVIMENTAÇÃO
+============================ */
+
+#origin {
+
+    cursor: pointer;
+
+}
+
+#raffle-container,
+#subscription-container {
+
+    display: flex;
+    flex-direction: column;
+
+    margin-bottom: 18px;
+
+    animation: fadeIn .2s ease;
+
+}
+
+#raffle-container.hidden,
+#subscription-container.hidden {
+
+    display: none;
+
+}
+
+#raffle,
+#subscription-payment {
+
+    cursor: pointer;
+
+}
+
+.form-info {
+
+    margin-bottom: 18px;
+
+    padding: 12px;
+
+    border-radius: 10px;
+
+    background: #f6f6f6;
+
+    border-left: 4px solid #6f5a8a;
+
+    font-size: 13px;
+
+    color: #555;
+
+    line-height: 1.5;
+
+}
+
+/* ============================
+   ANIMAÇÃO
+============================ */
+
+@keyframes fadeIn {
+
+    from {
+
+        opacity: 0;
+        transform: translateY(-6px);
+
+    }
+
+    to {
+
+        opacity: 1;
+        transform: translateY(0);
+
+    }
+
+}

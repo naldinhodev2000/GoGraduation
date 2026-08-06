@@ -28,10 +28,6 @@ public class ExpenseController {
         return expenseService.create(expenseRequestDTO);
     }
 
-    @GetMapping
-    public List<ExpenseResponseDTO> listAll() {
-        return expenseService.listAll();
-    }
 
     @GetMapping("/group/{groupId}")
     public List<ExpenseResponseDTO> listByGroupId(@PathVariable UUID groupId) {

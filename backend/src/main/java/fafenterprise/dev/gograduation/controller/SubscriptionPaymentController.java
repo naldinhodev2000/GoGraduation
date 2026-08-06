@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import fafenterprise.dev.gograduation.dto.response.SubscriptionPaymentResponseDTO;
 import fafenterprise.dev.gograduation.entity.relationship.SubscriptionPaymentEntity;
 import fafenterprise.dev.gograduation.services.SubscriptionPaymentService;
 import lombok.RequiredArgsConstructor;
@@ -30,8 +31,7 @@ public class SubscriptionPaymentController {
 
         return paymentService.create(
                 subscriptionId,
-                payment
-        );
+                payment);
     }
 
     @GetMapping("/subscription/{subscriptionId}")
@@ -43,11 +43,11 @@ public class SubscriptionPaymentController {
     }
 
     @GetMapping("/group/{groupId}")
-    public List<SubscriptionPaymentEntity> listByGroup(
+    public List<SubscriptionPaymentResponseDTO> listByGroup(
             @PathVariable UUID groupId) {
 
-        return paymentService
-                .listByGroup(groupId);
+        return paymentService.listByGroup(groupId);
+
     }
 
     @DeleteMapping("/{paymentId}")

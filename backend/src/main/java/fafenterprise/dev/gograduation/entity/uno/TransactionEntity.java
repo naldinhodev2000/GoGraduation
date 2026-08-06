@@ -6,17 +6,7 @@ import java.util.UUID;
 
 import fafenterprise.dev.gograduation.entity.relationship.SubscriptionPaymentEntity;
 import fafenterprise.dev.gograduation.enums.TransactionType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,15 +16,15 @@ import lombok.Setter;
 @Table(name = "transactions")
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class TransactionEntity {
 
     @Id
     @GeneratedValue
     private UUID id;
 
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Column(nullable = false, precision = 20, scale = 2)
     private BigDecimal value;
 
     @Column(nullable = false)
@@ -59,7 +49,8 @@ public class TransactionEntity {
     @JoinColumn(name = "raffle_id")
     private RaffleEntity raffle;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subscription_payment_id")
     private SubscriptionPaymentEntity subscriptionPayment;
+
 }

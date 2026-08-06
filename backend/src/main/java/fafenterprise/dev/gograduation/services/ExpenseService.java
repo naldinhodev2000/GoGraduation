@@ -71,15 +71,6 @@ public class ExpenseService {
                 expense.getValue());
     }
 
-    public List<ExpenseResponseDTO> listAll() {
-        return expenseRepository.findAll().stream()
-                .map(expense -> new ExpenseResponseDTO(
-                        expense.getId(),
-                        expense.getGroup().getId(),
-                        expense.getDescription(),
-                        expense.getValue()))
-                .toList();
-    }
 
     public void delete(UUID id) {
 
