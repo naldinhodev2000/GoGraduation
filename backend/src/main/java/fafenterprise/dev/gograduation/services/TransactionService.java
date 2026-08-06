@@ -26,113 +26,262 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 public class TransactionService {
 
-        private final TransactionRepository transactionRepository;
-        private final GroupRepository groupRepository;
-        private final UserRepository userRepository;
-        private final RaffleRepository raffleRepository;
-        private final SubscriptionPaymentRepository subscriptionPaymentRepository;
 
-        private final CashService cashService;
-        private final GroupUserService groupUserService;
-        private final JwtService jwtService;
+    private final TransactionRepository transactionRepository;
+    private final GroupRepository groupRepository;
+    private final UserRepository userRepository;
+    private final RaffleRepository raffleRepository;
+    private final SubscriptionPaymentRepository subscriptionPaymentRepository;
 
-        public TransactionDTO addTransaction(TransactionDTO dto) {
 
-                UUID groupId = dto.groupId();
+    private final CashService cashService;
+    private final GroupUserService groupUserService;
+    private final JwtService jwtService;
 
-                groupUserService.validateUserInGroup(groupId);
 
-                groupUserService.validateAdmin(groupId);
 
-                GroupEntity group = groupRepository.findById(groupId)
-                                .orElseThrow(() -> new RuntimeException("Grupo não encontrado"));
+    public TransactionDTO addTransaction(TransactionDTO dto) {
 
-                Cash cash = group.getCash();
 
-                if (cash == null) {
-                        throw new RuntimeException("Caixa não encontrado");
-                }
+        UUID groupId = dto.groupId();
 
-                UserEntity user = userRepository.findById(jwtService.getLoggedId())
-                                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
-                TransactionEntity transaction = new TransactionEntity();
+        groupUserService.validateUserInGroup(groupId);
 
-                transaction.setValue(dto.value());
-                transaction.setDescription(dto.description());
-                transaction.setCreatedAt(LocalDateTime.now());
+        groupUserService.validateAdmin(groupId);
 
-                transaction.setType(
-                                TransactionType.valueOf(
-                                                dto.type().toUpperCase()));
 
-                transaction.setCashRegister(cash);
 
-                transaction.setUser(user);
+        GroupEntity group =
+                groupRepository.findById(groupId)
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "Grupo não encontrado"));
 
-                if (dto.raffleId() != null) {
 
-                        RaffleEntity raffle = raffleRepository.findById(dto.raffleId())
-                                        .orElseThrow(() -> new RuntimeException("Rifa não encontrada"));
 
-                        if (!raffle.getGroup().getId().equals(groupId)) {
-                                throw new RuntimeException(
-                                                "A rifa não pertence a esta comunidade");
-                        }
+        Cash cash = group.getCash();
 
-                        transaction.setRaffle(raffle);
 
-                }
+        if (cash == null) {
 
-                if (dto.subscriptionPaymentId() != null) {
+            throw new RuntimeException(
+                    "Caixa não encontrado");
 
-                        SubscriptionPaymentEntity payment = subscriptionPaymentRepository
-                                        .findById(dto.subscriptionPaymentId())
-                                        .orElseThrow(() -> new RuntimeException("Pagamento não encontrado"));
-
-                        if (!payment
-                                        .getSubscription()
-                                        .getMonthlyFee()
-                                        .getGroup()
-                                        .getId()
-                                        .equals(groupId)) {
-
-                                throw new RuntimeException(
-                                                "Pagamento pertence a outra comunidade");
-                        }
-
-                        transaction.setSubscriptionPayment(payment);
-
-                }
-
-                transactionRepository.save(transaction);
-
-                cashService.updateCash(groupId);
-
-                return dto;
         }
 
-        public void remove(UUID id) {
 
-                TransactionEntity transaction = transactionRepository.findById(id)
-                                .orElseThrow(() -> new RuntimeException("Transação não encontrada"));
 
-                Cash cash = transaction.getCashRegister();
+        UserEntity user =
+                userRepository.findById(
+                        jwtService.getLoggedId()
+                )
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "Usuário não encontrado"));
 
-                if (cash == null || cash.getGroup() == null) {
-                        throw new RuntimeException(
-                                        "Não foi possível identificar a comunidade");
-                }
 
-                UUID groupId = cash.getGroup().getId();
 
-                groupUserService.validateUserInGroup(groupId);
+        TransactionEntity transaction =
+                new TransactionEntity();
 
-                groupUserService.validateAdmin(groupId);
 
-                transactionRepository.delete(transaction);
 
-                cashService.updateCash(groupId);
+        transaction.setValue(
+                dto.value()
+        );
+
+
+        transaction.setDescription(
+                dto.description()
+        );
+
+
+        transaction.setCreatedAt(
+                LocalDateTime.now()
+        );
+
+
+        transaction.setType(
+                TransactionType.valueOf(
+                        dto.type().toUpperCase()
+                )
+        );
+
+
+        transaction.setCashRegister(
+                cash
+        );
+
+
+        transaction.setUser(
+                user
+        );
+
+
+
+        // RIFA
+
+        if (dto.raffleId() != null) {
+
+
+            RaffleEntity raffle =
+                    raffleRepository.findById(
+                            dto.raffleId()
+                    )
+                    .orElseThrow(() ->
+                            new RuntimeException(
+                                    "Rifa não encontrada"));
+
+
+
+            if (!raffle.getGroup()
+                    .getId()
+                    .equals(groupId)) {
+
+
+                throw new RuntimeException(
+                        "A rifa não pertence a esta comunidade");
+
+            }
+
+
+
+            transaction.setRaffle(
+                    raffle
+            );
+
         }
+
+
+
+
+        // MENSALIDADE
+
+        if (dto.subscriptionPaymentId() != null) {
+
+
+            SubscriptionPaymentEntity payment =
+                    subscriptionPaymentRepository
+                    .findById(
+                            dto.subscriptionPaymentId()
+                    )
+                    .orElseThrow(() ->
+                            new RuntimeException(
+                                    "Pagamento não encontrado"));
+
+
+
+            if (!payment
+                    .getSubscription()
+                    .getMonthlyFee()
+                    .getGroup()
+                    .getId()
+                    .equals(groupId)) {
+
+
+                throw new RuntimeException(
+                        "Pagamento pertence a outra comunidade");
+
+            }
+
+
+
+            transaction.setSubscriptionPayment(
+                    payment
+            );
+
+        }
+
+
+
+
+        transactionRepository.save(
+                transaction
+        );
+
+
+        /*
+         * Garante que a transação
+         * foi enviada ao banco antes
+         * de recalcular o saldo.
+         */
+        transactionRepository.flush();
+
+
+
+        cashService.updateCash(
+                groupId
+        );
+
+
+
+        return dto;
+
+    }
+
+
+
+
+
+    public void remove(UUID id) {
+
+
+        TransactionEntity transaction =
+                transactionRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "Transação não encontrada"));
+
+
+
+        Cash cash =
+                transaction.getCashRegister();
+
+
+
+        if (cash == null ||
+            cash.getGroup() == null) {
+
+
+            throw new RuntimeException(
+                    "Não foi possível identificar a comunidade");
+
+        }
+
+
+
+        UUID groupId =
+                cash.getGroup()
+                .getId();
+
+
+
+        groupUserService.validateUserInGroup(
+                groupId
+        );
+
+
+        groupUserService.validateAdmin(
+                groupId
+        );
+
+
+
+        transactionRepository.delete(
+                transaction
+        );
+
+
+
+        transactionRepository.flush();
+
+
+
+        cashService.updateCash(
+                groupId
+        );
+
+    }
 
 }

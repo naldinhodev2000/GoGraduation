@@ -1,7 +1,9 @@
 import apiClient from "../apiClient.js";
 import { createTransactionRequest } from "../dtos/transactionRequest.js";
 
+
 const cashService = {
+
 
     async getCash(groupId) {
 
@@ -11,6 +13,8 @@ const cashService = {
 
     },
 
+
+
     async getRemainingToGoal(groupId) {
 
         return apiClient.get(
@@ -19,6 +23,8 @@ const cashService = {
 
     },
 
+
+
     async addTransaction({
         value,
         description,
@@ -26,18 +32,28 @@ const cashService = {
         groupId,
         raffleId = null,
         subscriptionPaymentId = null
+
     }) {
 
-        const body = createTransactionRequest({
 
-            value,
-            description,
-            type,
-            groupId,
-            raffleId,
-            subscriptionPaymentId
+        const body =
+            createTransactionRequest({
 
-        });
+                value,
+
+                description,
+
+                type,
+
+                groupId,
+
+                raffleId,
+
+                subscriptionPaymentId
+
+            });
+
+
 
         return apiClient.post(
             "/cash/transactions",
@@ -45,6 +61,8 @@ const cashService = {
         );
 
     },
+
+
 
     async removeTransaction(id) {
 
@@ -54,6 +72,8 @@ const cashService = {
 
     }
 
+
 };
+
 
 export default cashService;

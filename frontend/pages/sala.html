@@ -14,6 +14,7 @@
 
 <body>
 
+
     <!-- MENU LATERAL -->
 
     <nav id="side-menu">
@@ -26,47 +27,82 @@
 
             <h2>Bora Formar</h2>
 
-            <span>Gestão da Comissão</span>
+            <span>
+                Gestão da Comissão
+            </span>
 
         </div>
+
 
         <div class="menu-items">
 
             <a href="salas.html">
+
                 🏠
-                <span>Minhas Salas</span>
+
+                <span>
+                    Minhas Salas
+                </span>
+
             </a>
 
+
             <button id="logout-button">
+
                 🚪
-                <span>Sair</span>
+
+                <span>
+                    Sair
+                </span>
+
             </button>
 
+
         </div>
+
 
     </nav>
 
+
+
     <div id="menu-overlay"></div>
+
+
 
     <!-- HEADER -->
 
+
     <header id="header-content">
 
+
         <button id="menu-toggle">
+
             ☰
+
         </button>
+
+
 
         <div class="header-title">
 
+
             <h1 id="group-name">
+
                 Carregando...
+
             </h1>
 
+
             <span>
+
                 Comissão de Formatura
+
             </span>
 
+
         </div>
+
+
 
         <a id="back-link" href="salas.html">
 
@@ -74,25 +110,40 @@
 
         </a>
 
+
     </header>
+
+
 
     <!-- CONTEÚDO -->
 
+
     <main id="main-content">
+
+
 
         <!-- DASHBOARD -->
 
+
         <section class="dashboard">
+
 
             <div class="info-card">
 
+
                 <span class="card-icon">
+
                     🎯
+
                 </span>
 
+
                 <span class="card-title">
+
                     Meta
+
                 </span>
+
 
                 <strong id="goal-value">
 
@@ -100,17 +151,28 @@
 
                 </strong>
 
+
             </div>
+
+
+
 
             <div class="info-card">
 
+
                 <span class="card-icon">
+
                     💰
+
                 </span>
 
+
                 <span class="card-title">
+
                     Saldo Atual
+
                 </span>
+
 
                 <strong id="balance-value">
 
@@ -118,15 +180,77 @@
 
                 </strong>
 
+
             </div>
+
+
+
+            <div class="info-card">
+
+
+                <span class="card-icon">
+
+                    📉
+
+                </span>
+
+
+                <span class="card-title">
+
+                    Despesas Previstas
+
+                </span>
+
+
+                <strong id="expense-value">
+
+                    R$ 0,00
+
+                </strong>
+
+
+            </div>
+
+
+
+
+            <div class="info-card">
+
+
+                <span class="card-icon">
+
+                    💵
+
+                </span>
+
+
+                <span class="card-title">
+
+                    Saldo Projetado
+
+                </span>
+
+
+                <strong id="projected-balance">
+
+                    R$ 0,00
+
+                </strong>
+
+
+            </div>
+
 
         </section>
 
         <!-- TOKEN -->
 
+
         <section class="token-card">
 
+
             <div>
+
 
                 <h3>
 
@@ -134,81 +258,168 @@
 
                 </h3>
 
+
+
                 <strong id="group-token">
 
                     --------
 
                 </strong>
 
+
             </div>
+
+
 
             <button id="copy-token-button">
 
+
                 📋 Copiar
+
 
             </button>
 
+
+
         </section>
+
+
+
+
 
         <!-- AÇÕES -->
 
+
         <section class="actions">
+
+
 
             <button id="link-membros" class="action-button">
 
+
                 <span class="action-icon">
+
                     👥
+
                 </span>
+
 
                 <span>
+
                     Membros
+
                 </span>
 
+
             </button>
+
+
+
 
             <button id="link-lancar" class="action-button">
 
+
                 <span class="action-icon">
+
                     💸
+
                 </span>
+
 
                 <span>
+
                     Lançar
+
                 </span>
 
+
             </button>
+
+
+
 
             <button id="link-mensalidade" class="action-button">
 
+
                 <span class="action-icon">
+
                     📅
+
                 </span>
+
 
                 <span>
+
                     Mensalidade
+
                 </span>
 
+
             </button>
+
+
+
+
+
+            <button id="link-expenses" class="action-button">
+
+
+                <span class="action-icon">
+
+                    📉
+
+                </span>
+
+
+                <span>
+
+                    Despesas
+
+                </span>
+
+
+            </button>
+
+
+
+
 
             <button id="link-rifa" class="action-button">
 
+
                 <span class="action-icon">
+
                     🎟️
+
                 </span>
 
+
                 <span>
+
                     Rifas
+
                 </span>
+
 
             </button>
 
+
+
         </section>
+
+
+
+
 
         <!-- RIFAS -->
 
+
         <section id="raffle-section">
 
+
+
             <div class="section-header">
+
 
                 <h2>
 
@@ -216,19 +427,34 @@
 
                 </h2>
 
+
+
                 <span>
 
                     Ativas
 
                 </span>
 
+
+
             </div>
+
+
+
+
 
             <ul id="raffle-list">
 
+
             </ul>
 
+
+
+
+
             <div id="raffle-empty" class="hidden">
+
+
 
                 <div class="empty-icon">
 
@@ -236,11 +462,17 @@
 
                 </div>
 
+
+
+
                 <h3>
 
                     Nenhuma rifa cadastrada
 
                 </h3>
+
+
+
 
                 <p>
 
@@ -248,31 +480,127 @@
 
                 </p>
 
+
+
+
             </div>
 
+
+
         </section>
+                </section>
 
-        <p id="error-message" class="hidden"></p>
 
-    </main>
+        <!-- DESPESAS PREVISTAS -->
 
-    <!-- TEMPLATE DE CARD DE RIFA -->
 
-    <template id="raffle-template">
+        <section id="expense-section">
 
-        <li class="raffle-card">
 
-            <div class="raffle-info">
+            <div class="section-header">
 
-                <h3 class="raffle-name">
+
+                <h2>
+
+                    Despesas Previstas
+
+                </h2>
+
+
+                <span>
+
+                    Planejamento
+
+                </span>
+
+
+            </div>
+
+
+
+            <ul id="expense-list">
+
+
+            </ul>
+
+
+
+
+
+            <div id="expense-empty" class="hidden">
+
+
+                <div class="empty-icon">
+
+                    📉
+
+                </div>
+
+
+
+                <h3>
+
+                    Nenhuma despesa prevista
 
                 </h3>
 
-                <p class="raffle-price">
+
+
+                <p>
+
+                    Cadastre despesas futuras para organizar o orçamento da turma.
 
                 </p>
 
+
+
             </div>
+
+
+
+        </section>
+
+
+
+
+        <p id="error-message" class="hidden"></p>
+
+
+
+    </main>
+
+
+
+
+
+    <!-- TEMPLATE DE CARD DE RIFA -->
+
+
+    <template id="raffle-template">
+
+
+        <li class="raffle-card">
+
+
+            <div class="raffle-info">
+
+
+                <h3 class="raffle-name">
+
+
+                </h3>
+
+
+
+                <p class="raffle-price">
+
+
+                </p>
+
+
+            </div>
+
+
 
             <span class="raffle-arrow">
 
@@ -280,12 +608,61 @@
 
             </span>
 
+
         </li>
+
 
     </template>
 
-    <script type="module" src="../js/sala.js"></script>
+
+
+
+
+    <!-- TEMPLATE DE DESPESA -->
+
+
+    <template id="expense-template">
+
+
+        <li class="expense-card">
+
+
+            <div class="expense-info">
+
+
+                <h3 class="expense-name">
+
+
+                </h3>
+
+
+
+                <p class="expense-value">
+
+
+                </p>
+
+
+            </div>
+
+
+        </li>
+
+
+    </template>
+
+
+
+
+
+    <script 
+        type="module" 
+        src="../js/sala.js">
+    </script>
+
+
 
 </body>
+
 
 </html>
